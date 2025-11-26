@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IX:52 Oracle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background-color: #F7F7F5;
+            color: #222;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e5e5e5;
+        }
+        
+        body.dark-mode .section-card {
+            background: #2a2a2a;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        body.dark-mode header {
+            background-color: #2a2a2a;
+            border-bottom-color: #3a3a3a;
+        }
+        
+        body.dark-mode footer {
+            background-color: #2a2a2a;
+            border-top-color: #3a3a3a;
+        }
+        
+        body.dark-mode select {
+            background-color: #3a3a3a;
+            border-color: #4a4a4a;
+            color: #e5e5e5;
+        }
+        
+        body.dark-mode .section-heading {
+            color: #bbb;
+        }
+        
+        body.dark-mode .btn-secondary {
+            background-color: #3a3a3a;
+            color: #e5e5e5;
+        }
+        
+        body.dark-mode .btn-secondary:hover {
+            background-color: #4a4a4a;
+        }
+        
+        body.dark-mode .btn-outline {
+            border-color: #e5e5e5;
+            color: #e5e5e5;
+        }
+        
+        body.dark-mode .btn-outline:hover {
+            background-color: #e5e5e5;
+            color: #222;
+        }
+        
+        body.dark-mode .disclaimer {
+            background-color: #3a3a3a;
+            color: #bbb;
+        }
+        
+        body.dark-mode #quoteText {
+            color: #d0d0d0;
+        }
+        
+        body.dark-mode #stabilityText {
+            background-color: #2a3f5f !important;
+            color: #e5e5e5 !important;
+        }
+        
+        body.dark-mode .text-gray-600 {
+            color: #bbb !important;
+        }
+        
+        body.dark-mode .text-gray-700 {
+            color: #d0d0d0 !important;
+        }
+        
+        body.dark-mode .text-sm {
+            color: #bbb;
+        }
+        
+        body.dark-mode #selectedCardLabel {
+            color: #d0d0d0;
+        }
+        
+        body.dark-mode #wordMeaning,
+        body.dark-mode #triviaText {
+            color: #d0d0d0 !important;
+        }
+        
+        body.dark-mode #triviaSource {
+            color: #aaa !important;
+        }
+        
+        body.dark-mode #triviaSource a {
+            color: #93c5fd !important;
+        }
+        
+        body.dark-mode .chip.bg-gray-100 {
+            background-color: #3a3a3a !important;
+            color: #e5e5e5 !important;
+        }
+        
+        body.dark-mode .chip.bg-blue-50 {
+            background-color: #1e3a5f !important;
+            color: #93c5fd !important;
+        }
+        
+        body.dark-mode .chip.bg-purple-50 {
+            background-color: #3b2463 !important;
+            color: #d8b4fe !important;
+        }
+        
+        .dark-mode-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        body.dark-mode .dark-mode-toggle {
+            background-color: #4a4a4a;
+        }
+        
+        .dark-mode-toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        body.dark-mode .dark-mode-toggle-slider {
+            transform: translateX(30px);
+            background-color: #667eea;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .toast {
+            animation: toast 2s ease-in-out;
+        }
+        
+        @keyframes toast {
+            0%, 100% { opacity: 0; transform: translateY(10px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.1);
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .chip {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 4px;
+        }
+        
+        .element-water { background-color: #E0F2F7; color: #006064; }
+        .element-earth { background-color: #FFF8E1; color: #E65100; }
+        .element-fire { background-color: #FCE4EC; color: #880E4F; }
+        .element-air { background-color: #ECEFF1; color: #263238; }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        
+        .section-heading {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: #222;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #444;
+        }
+        
+        .btn-secondary {
+            background-color: #E0E0E0;
+            color: #222;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #D0D0D0;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #222;
+            color: #222;
+        }
+        
+        .btn-outline:hover {
+            background-color: #222;
+            color: white;
+        }
+        
+        select {
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid #D0D0D0;
+            background-color: white;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 150px;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #222;
+        }
+        
+        .disclaimer {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.5;
+            padding: 12px;
+            background-color: #F5F5F5;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+        
+        .lucky-number-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .lucky-number-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg hidden z-50">
+        Copied!
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-2xl font-bold">IX:52 Oracle</h1>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-gray-600" id="darkModeLabel">☀️</span>
+                    <div class="dark-mode-toggle" onclick="toggleDarkMode()" role="button" aria-label="Toggle dark mode" tabindex="0">
+                        <div class="dark-mode-toggle-slider">
+                            <span id="toggleIcon">☀️</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card Selector -->
+            <div class="flex flex-wrap gap-3 items-center">
+                <div>
+                    <label for="suitSelect" class="block text-xs font-medium text-gray-600 mb-1">Suit</label>
+                    <select id="suitSelect">
+                        <option value="">Select suit...</option>
+                        <option value="Hearts">Hearts</option>
+                        <option value="Diamonds">Diamonds</option>
+                        <option value="Clubs">Clubs</option>
+                        <option value="Spades">Spades</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="rankSelect" class="block text-xs font-medium text-gray-600 mb-1">Rank</label>
+                    <select id="rankSelect">
+                        <option value="">Select rank...</option>
+                        <option value="Ace">Ace</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="Jack">Jack</option>
+                        <option value="Queen">Queen</option>
+                        <option value="King">King</option>
+                    </select>
+                </div>
+                
+                <div class="mt-5">
+                    <button id="randomBtn" class="btn btn-outline">Random Card</button>
+                </div>
+            </div>
+            
+            <div id="selectedCardLabel" class="mt-3 text-sm font-medium text-gray-700"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        <!-- Welcome Message -->
+        <div id="welcomeMessage" class="text-center py-12">
+            <p class="text-lg text-gray-600">Select a suit and rank to view your card</p>
+        </div>
+
+        <!-- Card Not Found -->
+        <div id="notFoundMessage" class="text-center py-12 hidden">
+            <p class="text-lg text-red-600">No card found for this combination.</p>
+        </div>
+
+        <!-- Card View -->
+        <div id="cardView" class="hidden">
+            <!-- Card Overview -->
+            <section class="section-card fade-in">
+                <div class="flex flex-wrap items-start justify-between gap-6 mb-4">
+                    <div class="flex-1">
+                        <h2 id="cardTitle" class="text-3xl font-bold mb-4"></h2>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span id="elementChip" class="chip"></span>
+                            <span id="verbesqueChip" class="chip bg-gray-100 text-gray-800"></span>
+                            <span id="directionChip" class="chip bg-gray-100 text-gray-800"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col items-center">
+                        <div id="luckyNumberBadge" class="lucky-number-badge"></div>
+                        <div class="lucky-number-label">Lucky Number</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <span class="text-sm font-medium text-gray-600">Day's Color: </span>
+                    <span id="colorSwatch" class="color-swatch"></span>
+                    <span id="colorName" class="text-sm font-medium ml-2"></span>
+                </div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <span id="suitThemeChip" class="chip bg-blue-50 text-blue-800"></span>
+                    <span id="rankArchetypeChip" class="chip bg-purple-50 text-purple-800"></span>
+                </div>
+            </section>
+
+            <!-- Oracle & Quote -->
+            <section class="section-card fade-in">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <div class="section-heading">Oracle</div>
+                        <p id="oracleText" class="text-base leading-relaxed"></p>
+                    </div>
+                    <div>
+                        <div class="section-heading">Quote</div>
+                        <p id="quoteText" class="text-base italic text-gray-700 leading-relaxed mb-2"></p>
+                        <button onclick="copyToClipboard('quote')" class="btn btn-secondary text-xs">Copy Quote</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Daily Practice -->
+            <section class="section-card fade-in">
+                <h3 class="text-xl font-bold mb-4">Daily Practice</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="section-heading">Mantra</div>
+                        <p id="mantraText" class="text-base font-medium mb-2"></p>
+                        <button onclick="copyToClipboard('mantra')" class="btn btn-secondary text-xs">Copy Mantra</button>
+                    </div>
+                    
+                    <div>
+                        <div class="section-heading">Tiny Action</div>
+                        <p id="tinyActionText" class="text-base"></p>
+                    </div>
+                    
+                    <div>
+                        <div class="section-heading">Journal Prompt</div>
+                        <p id="journalPromptText" class="text-base mb-2"></p>
+                        <button onclick="copyToClipboard('journal')" class="btn btn-secondary text-xs">Copy Prompt</button>
+                    </div>
+                    
+                    <div>
+                        <div class="section-heading">Body Cue</div>
+                        <p id="bodyCueText" class="text-base font-medium"></p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button onclick="copyToClipboard('all')" class="btn btn-primary">Copy All Practice</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Verbesque Layer -->
+            <section class="section-card fade-in">
+                <div class="section-heading">Verbesque Verb</div>
+                <div id="verbesqueVerb" class="text-2xl font-bold mb-2"></div>
+                <p id="verbesqueCue" class="text-base text-gray-700"></p>
+            </section>
+
+            <!-- Word & Trivia -->
+            <section class="section-card fade-in">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <div class="section-heading">Word of the Day</div>
+                        <div id="wordOfDay" class="text-lg font-semibold mb-1"></div>
+                        <p id="wordMeaning" class="text-sm text-gray-700"></p>
+                    </div>
+                    <div>
+                        <div class="section-heading">Trivia</div>
+                        <p id="triviaText" class="text-sm text-gray-700 mb-1"></p>
+                        <p id="triviaSource" class="text-xs text-gray-500"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stability Check -->
+            <section class="section-card fade-in">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-bold">Stability Check (Bipolar Context)</h3>
+                    <button id="toggleStabilityBtn" onclick="toggleStability()" class="btn btn-outline text-xs">
+                        Show
+                    </button>
+                </div>
+                
+                <p class="text-sm text-gray-600 mb-3">A personal self-check prompt. Not medical advice.</p>
+                
+                <div id="stabilityContent" class="hidden">
+                    <p id="stabilityText" class="text-base mb-3 p-4 bg-blue-50 rounded-lg"></p>
+                    <div class="disclaimer">
+                        This is for personal reflection and does not replace professional mental health care. 
+                        If you feel unsafe, contact your clinician or local emergency services.
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-5xl mx-auto px-4 py-6 text-center">
+            <p class="text-sm text-gray-600 mb-2">IX:52 — 2025</p>
+            <p class="text-xs text-gray-500">
+                This tool is for personal reflection and does not replace professional mental health care.
+            </p>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+

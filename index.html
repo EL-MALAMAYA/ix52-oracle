@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IX:52 Oracle</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -13,130 +14,316 @@
         }
         
         body {
-            background-color: #F7F7F5;
-            color: #222;
+            background-color: #1a1a1a;
+            color: #e5e5e5;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
-        body.dark-mode {
-            background-color: #1a1a1a;
-            color: #e5e5e5;
+        body.light-mode {
+            background-color: #F7F7F5;
+            color: #222;
         }
         
-        body.dark-mode .section-card {
+        .section-card {
             background: #2a2a2a;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
         
-        body.dark-mode header {
-            background-color: #2a2a2a;
-            border-bottom-color: #3a3a3a;
+        header {
+            background-color: #2a2a2a !important;
+            border-bottom-color: #3a3a3a !important;
         }
         
-        body.dark-mode footer {
-            background-color: #2a2a2a;
-            border-top-color: #3a3a3a;
+        footer {
+            background-color: #2a2a2a !important;
+            border-top-color: #3a3a3a !important;
         }
         
-        body.dark-mode select {
+        header h1 {
+            color: #e5e5e5 !important;
+        }
+        
+        footer p {
+            color: #bbb !important;
+        }
+        
+        footer a {
+            color: #667eea !important;
+        }
+        
+        select {
             background-color: #3a3a3a;
             border-color: #4a4a4a;
             color: #e5e5e5;
         }
         
-        body.dark-mode .section-heading {
+        .section-heading {
             color: #bbb;
         }
         
-        body.dark-mode .btn-secondary {
+        .btn-secondary {
             background-color: #3a3a3a;
             color: #e5e5e5;
         }
         
-        body.dark-mode .btn-secondary:hover {
+        .btn-secondary:hover {
             background-color: #4a4a4a;
         }
         
-        body.dark-mode .btn-outline {
-            border-color: #e5e5e5;
-            color: #e5e5e5;
+        .btn-outline {
+            border-color: #667eea;
+            color: white;
+            background-color: transparent;
         }
         
-        body.dark-mode .btn-outline:hover {
-            background-color: #e5e5e5;
+        .btn-outline:hover {
+            background-color: #667eea;
+            color: white;
+        }
+        
+        body.light-mode .btn-outline {
+            border-color: #222;
             color: #222;
         }
         
-        body.dark-mode .disclaimer {
+        body.light-mode .btn-outline:hover {
+            background-color: #222;
+            color: white;
+        }
+        
+        .disclaimer {
             background-color: #3a3a3a;
             color: #bbb;
         }
         
-        body.dark-mode #quoteText {
+        #quoteText {
             color: #d0d0d0;
         }
         
-        body.dark-mode #stabilityText {
+        #stabilityText {
             background-color: #2a3f5f !important;
             color: #e5e5e5 !important;
         }
         
-        body.dark-mode .text-gray-600 {
+        .text-gray-600 {
             color: #bbb !important;
         }
         
-        body.dark-mode .text-gray-700 {
+        .text-gray-700 {
             color: #d0d0d0 !important;
         }
         
-        body.dark-mode .text-sm {
+        .text-sm {
             color: #bbb;
         }
         
-        body.dark-mode #selectedCardLabel {
+        #selectedCardLabel {
             color: #d0d0d0;
         }
         
-        body.dark-mode #wordMeaning,
-        body.dark-mode #triviaText {
+        #wordMeaning,
+        #triviaText {
             color: #d0d0d0 !important;
         }
         
-        body.dark-mode #triviaSource {
+        #triviaSource {
             color: #aaa !important;
         }
         
-        body.dark-mode #triviaSource a {
+        #triviaSource a {
             color: #93c5fd !important;
         }
         
-        body.dark-mode .chip.bg-gray-100 {
+        .chip.bg-gray-100 {
             background-color: #3a3a3a !important;
             color: #e5e5e5 !important;
         }
         
-        body.dark-mode .chip.bg-blue-50 {
+        .chip.bg-blue-50 {
             background-color: #1e3a5f !important;
             color: #93c5fd !important;
         }
         
-        body.dark-mode .chip.bg-purple-50 {
+        .chip.bg-purple-50 {
             background-color: #3b2463 !important;
             color: #d8b4fe !important;
         }
+        
+        /* Light mode overrides */
+        body.light-mode .section-card {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            color: #222;
+        }
+        
+        body.light-mode header {
+            background-color: white !important;
+            border-bottom-color: #e5e7eb !important;
+        }
+        
+        body.light-mode footer {
+            background-color: white !important;
+            border-top-color: #e5e7eb !important;
+        }
+        
+        body.light-mode header h1 {
+            color: #222 !important;
+        }
+        
+        body.light-mode footer p {
+            color: #4b5563 !important;
+        }
+        
+        body.light-mode footer a {
+            color: #667eea !important;
+        }
+        
+        body.light-mode select {
+            background-color: white;
+            border-color: #D0D0D0;
+            color: #222;
+        }
+        
+        body.light-mode .section-heading {
+            color: #666;
+        }
+        
+        body.light-mode .btn-secondary {
+            background-color: #E0E0E0;
+            color: #222;
+        }
+        
+        body.light-mode .btn-secondary:hover {
+            background-color: #D0D0D0;
+        }
+        
+        body.light-mode .btn-outline {
+            border-color: #222;
+            color: #222;
+        }
+        
+        body.light-mode .btn-outline:hover {
+            background-color: #222;
+            color: white;
+        }
+        
+        body.light-mode .disclaimer {
+            background-color: #F5F5F5;
+            color: #888;
+        }
+        
+        body.light-mode #quoteText {
+            color: #4b5563;
+        }
+        
+        body.light-mode #stabilityText {
+            background-color: #dbeafe !important;
+            color: #1e3a8a !important;
+        }
+        
+        body.light-mode .text-gray-600 {
+            color: #4b5563 !important;
+        }
+        
+        body.light-mode .text-gray-700 {
+            color: #374151 !important;
+        }
+        
+        body.light-mode .text-sm {
+            color: #4b5563;
+        }
+        
+        body.light-mode #selectedCardLabel {
+            color: #374151;
+        }
+        
+        body.light-mode #wordMeaning,
+        body.light-mode #triviaText {
+            color: #374151 !important;
+        }
+        
+        body.light-mode #triviaSource {
+            color: #6b7280 !important;
+        }
+        
+        body.light-mode #triviaSource a {
+            color: #2563eb !important;
+        }
+        
+        body.light-mode .chip.bg-gray-100 {
+            background-color: #f3f4f6 !important;
+            color: #1f2937 !important;
+        }
+        
+        body.light-mode .chip.bg-blue-50 {
+            background-color: #eff6ff !important;
+            color: #1e40af !important;
+        }
+        
+        body.light-mode .chip.bg-purple-50 {
+            background-color: #faf5ff !important;
+            color: #7c3aed !important;
+        }
+        
+        /* Fix light text on light backgrounds in dark mode */
+        #welcomeMessage,
+        #notFoundMessage {
+            color: inherit;
+        }
+        
+        body.light-mode #welcomeMessage,
+        body.light-mode #notFoundMessage {
+            color: #4b5563;
+        }
+        
+        /* Ensure all text in cards is visible - use !important to override Tailwind */
+        .section-card h2,
+        .section-card h3,
+        .section-card p,
+        .section-card div {
+            color: #e5e5e5 !important;
+        }
+        
+        body.light-mode .section-card h2,
+        body.light-mode .section-card h3,
+        body.light-mode .section-card p,
+        body.light-mode .section-card div {
+            color: #222 !important;
+        }
+        
+        /* Fix welcome/not found messages */
+        #welcomeMessage p,
+        #notFoundMessage p {
+            color: #bbb;
+        }
+        
+        body.light-mode #welcomeMessage p,
+        body.light-mode #notFoundMessage p {
+            color: #4b5563;
+        }
+        
+        /* Color name text */
+        #colorName {
+            color: #e5e5e5;
+        }
+        
+        body.light-mode #colorName {
+            color: #222;
+        }
+        
         
         .dark-mode-toggle {
             position: relative;
             width: 60px;
             height: 30px;
-            background-color: #ddd;
+            background-color: #4a4a4a;
             border-radius: 15px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
         
-        body.dark-mode .dark-mode-toggle {
-            background-color: #4a4a4a;
+        body.light-mode .dark-mode-toggle {
+            background-color: #ddd;
         }
         
         .dark-mode-toggle-slider {
@@ -145,7 +332,7 @@
             left: 3px;
             width: 24px;
             height: 24px;
-            background-color: white;
+            background-color: #667eea;
             border-radius: 50%;
             transition: transform 0.3s ease;
             display: flex;
@@ -154,9 +341,9 @@
             font-size: 14px;
         }
         
-        body.dark-mode .dark-mode-toggle-slider {
+        body.light-mode .dark-mode-toggle-slider {
             transform: translateX(30px);
-            background-color: #667eea;
+            background-color: white;
         }
         
         .fade-in {
@@ -201,11 +388,12 @@
         .element-air { background-color: #ECEFF1; color: #263238; }
         
         .section-card {
-            background: white;
+            background: #2a2a2a;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            color: #e5e5e5;
         }
         
         .section-heading {
@@ -228,11 +416,20 @@
         }
         
         .btn-primary {
-            background-color: #222;
+            background-color: #667eea;
             color: white;
         }
         
         .btn-primary:hover {
+            background-color: #5568d3;
+        }
+        
+        body.light-mode .btn-primary {
+            background-color: #222;
+            color: white;
+        }
+        
+        body.light-mode .btn-primary:hover {
             background-color: #444;
         }
         
@@ -259,8 +456,9 @@
         select {
             padding: 10px 16px;
             border-radius: 6px;
-            border: 1px solid #D0D0D0;
-            background-color: white;
+            border: 1px solid #4a4a4a;
+            background-color: #3a3a3a;
+            color: #e5e5e5;
             font-size: 14px;
             cursor: pointer;
             min-width: 150px;
@@ -268,7 +466,27 @@
         
         select:focus {
             outline: none;
+            border-color: #667eea;
+        }
+        
+        select option {
+            background-color: #3a3a3a;
+            color: #e5e5e5;
+        }
+        
+        body.light-mode select {
+            background-color: white;
+            border-color: #D0D0D0;
+            color: #222;
+        }
+        
+        body.light-mode select:focus {
             border-color: #222;
+        }
+        
+        body.light-mode select option {
+            background-color: white;
+            color: #222;
         }
         
         .disclaimer {
@@ -286,7 +504,7 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            color: white !important;
             font-size: 24px;
             font-weight: 700;
             width: 60px;
@@ -295,13 +513,21 @@
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
         
+        body.light-mode .lucky-number-badge {
+            color: white !important;
+        }
+        
         .lucky-number-label {
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #666;
+            color: #bbb;
             margin-top: 4px;
+        }
+        
+        body.light-mode .lucky-number-label {
+            color: #666;
         }
     </style>
 </head>
@@ -317,10 +543,10 @@
             <div class="flex items-center justify-between mb-4">
                 <h1 class="text-2xl font-bold">IX:52 Oracle</h1>
                 <div class="flex items-center gap-2">
-                    <span class="text-sm text-gray-600" id="darkModeLabel">☀️</span>
-                    <div class="dark-mode-toggle" onclick="toggleDarkMode()" role="button" aria-label="Toggle dark mode" tabindex="0">
+                    <span class="text-sm text-gray-600" id="darkModeLabel">🌙</span>
+                    <div class="dark-mode-toggle" onclick="toggleDarkMode()" role="button" aria-label="Toggle light mode" tabindex="0">
                         <div class="dark-mode-toggle-slider">
-                            <span id="toggleIcon">☀️</span>
+                            <span id="toggleIcon">🌙</span>
                         </div>
                     </div>
                 </div>
@@ -509,7 +735,10 @@
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 mt-12">
         <div class="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p class="text-sm text-gray-600 mb-2">IX:52 — 2025</p>
+            <p class="text-sm text-gray-600 mb-2">
+                IX:52 — 2025 · 
+                <a href="https://rchetype.xyz" target="_blank" rel="noopener noreferrer" class="hover:underline" style="color: #667eea;">@rchetypex</a>
+            </p>
             <p class="text-xs text-gray-500">
                 This tool is for personal reflection and does not replace professional mental health care.
             </p>

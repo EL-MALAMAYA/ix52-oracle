@@ -234,27 +234,27 @@ function showToast() {
     }, 2000);
 }
 
-// Dark mode toggle
+// Dark mode toggle (now defaults to dark, toggles to light)
 function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
+    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
     
     // Update icon
-    const icon = isDark ? '🌙' : '☀️';
+    const icon = isLight ? '☀️' : '🌙';
     document.getElementById('toggleIcon').textContent = icon;
-    document.getElementById('darkModeLabel').textContent = isDark ? '🌙' : '☀️';
+    document.getElementById('darkModeLabel').textContent = isLight ? '☀️' : '🌙';
     
     // Save preference
-    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    localStorage.setItem('lightMode', isLight ? 'enabled' : 'disabled');
 }
 
-// Load dark mode preference
+// Load light mode preference
 function loadDarkModePreference() {
-    const darkMode = localStorage.getItem('darkMode');
-    if (darkMode === 'enabled') {
-        document.body.classList.add('dark-mode');
-        document.getElementById('toggleIcon').textContent = '🌙';
-        document.getElementById('darkModeLabel').textContent = '🌙';
+    const lightMode = localStorage.getItem('lightMode');
+    if (lightMode === 'enabled') {
+        document.body.classList.add('light-mode');
+        document.getElementById('toggleIcon').textContent = '☀️';
+        document.getElementById('darkModeLabel').textContent = '☀️';
     }
 }
 

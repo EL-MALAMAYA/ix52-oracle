@@ -92,8 +92,8 @@
         }
         
         .disclaimer {
-            background-color: #3a3a3a;
-            color: #bbb;
+            background-color: #e5e5e5 !important;
+            color: #222 !important;
         }
         
         #quoteText {
@@ -208,8 +208,8 @@
         }
         
         body.light-mode .disclaimer {
-            background-color: #F5F5F5;
-            color: #888;
+            background-color: #F5F5F5 !important;
+            color: #888 !important;
         }
         
         body.light-mode #quoteText {
@@ -442,17 +442,6 @@
             background-color: #D0D0D0;
         }
         
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid #222;
-            color: #222;
-        }
-        
-        .btn-outline:hover {
-            background-color: #222;
-            color: white;
-        }
-        
         select {
             padding: 10px 16px;
             border-radius: 6px;
@@ -514,6 +503,10 @@
         }
         
         body.light-mode .lucky-number-badge {
+            color: white !important;
+        }
+        
+        body.light-mode #luckyNumberBadge {
             color: white !important;
         }
         
@@ -723,10 +716,6 @@
                 
                 <div id="stabilityContent" class="hidden">
                     <p id="stabilityText" class="text-base mb-3 p-4 bg-blue-50 rounded-lg"></p>
-                    <div class="disclaimer">
-                        This is for personal reflection and does not replace professional mental health care. 
-                        If you feel unsafe, contact your clinician or local emergency services.
-                    </div>
                 </div>
             </section>
         </div>

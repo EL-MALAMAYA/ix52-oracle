@@ -1414,3 +1414,4 @@ const ORACLE_CARDS = [
     }
 ];
 
+

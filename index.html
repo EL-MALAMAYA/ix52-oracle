@@ -3,739 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IX:52 Oracle</title>
+    <title>IX:52 — The Hermit Returns | Maiba Studio</title>
+    <meta name="description" content="Explore IX:52, a 52-day Verbesque practice of intention, sustainable motion, and creative discovery, featuring Filipino artists from RunIt Decks' Bicycle Sari-Sari Code:RED playing cards.">
+    <meta property="og:title" content="IX:52 — The Hermit Returns">
+    <meta property="og:description" content="A 52-day Verbesque practice of intention, sustainable motion, and creative discovery, featuring Filipino artists from RunIt Decks' Bicycle Sari-Sari Code:RED playing cards.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ix52.maiba.studio/">
+    <meta name="theme-color" content="#F5F2EB">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        * {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-        
-        body {
-            background-color: #1a1a1a;
-            color: #e5e5e5;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        body.light-mode {
-            background-color: #F7F7F5;
-            color: #222;
-        }
-        
-        .section-card {
-            background: #2a2a2a;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        
-        header {
-            background-color: #2a2a2a !important;
-            border-bottom-color: #3a3a3a !important;
-        }
-        
-        footer {
-            background-color: #2a2a2a !important;
-            border-top-color: #3a3a3a !important;
-        }
-        
-        header h1 {
-            color: #e5e5e5 !important;
-        }
-        
-        footer p {
-            color: #bbb !important;
-        }
-        
-        footer a {
-            color: #667eea !important;
-        }
-        
-        select {
-            background-color: #3a3a3a;
-            border-color: #4a4a4a;
-            color: #e5e5e5;
-        }
-        
-        .section-heading {
-            color: #bbb;
-        }
-        
-        .btn-secondary {
-            background-color: #3a3a3a;
-            color: #e5e5e5;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #4a4a4a;
-        }
-        
-        .btn-outline {
-            border-color: #667eea;
-            color: white;
-            background-color: transparent;
-        }
-        
-        .btn-outline:hover {
-            background-color: #667eea;
-            color: white;
-        }
-        
-        body.light-mode .btn-outline {
-            border-color: #222;
-            color: #222;
-        }
-        
-        body.light-mode .btn-outline:hover {
-            background-color: #222;
-            color: white;
-        }
-        
-        .disclaimer {
-            background-color: #e5e5e5 !important;
-            color: #222 !important;
-        }
-        
-        #quoteText {
-            color: #d0d0d0;
-        }
-        
-        #stabilityText {
-            background-color: #2a3f5f !important;
-            color: #e5e5e5 !important;
-        }
-        
-        .text-gray-600 {
-            color: #bbb !important;
-        }
-        
-        .text-gray-700 {
-            color: #d0d0d0 !important;
-        }
-        
-        .text-sm {
-            color: #bbb;
-        }
-        
-        #selectedCardLabel {
-            color: #d0d0d0;
-        }
-        
-        #wordMeaning,
-        #triviaText {
-            color: #d0d0d0 !important;
-        }
-        
-        #triviaSource {
-            color: #aaa !important;
-        }
-        
-        #triviaSource a {
-            color: #93c5fd !important;
-        }
-        
-        .chip.bg-gray-100 {
-            background-color: #3a3a3a !important;
-            color: #e5e5e5 !important;
-        }
-        
-        .chip.bg-blue-50 {
-            background-color: #1e3a5f !important;
-            color: #93c5fd !important;
-        }
-        
-        .chip.bg-purple-50 {
-            background-color: #3b2463 !important;
-            color: #d8b4fe !important;
-        }
-        
-        /* Light mode overrides */
-        body.light-mode .section-card {
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            color: #222;
-        }
-        
-        body.light-mode header {
-            background-color: white !important;
-            border-bottom-color: #e5e7eb !important;
-        }
-        
-        body.light-mode footer {
-            background-color: white !important;
-            border-top-color: #e5e7eb !important;
-        }
-        
-        body.light-mode header h1 {
-            color: #222 !important;
-        }
-        
-        body.light-mode footer p {
-            color: #4b5563 !important;
-        }
-        
-        body.light-mode footer a {
-            color: #667eea !important;
-        }
-        
-        body.light-mode select {
-            background-color: white;
-            border-color: #D0D0D0;
-            color: #222;
-        }
-        
-        body.light-mode .section-heading {
-            color: #666;
-        }
-        
-        body.light-mode .btn-secondary {
-            background-color: #E0E0E0;
-            color: #222;
-        }
-        
-        body.light-mode .btn-secondary:hover {
-            background-color: #D0D0D0;
-        }
-        
-        body.light-mode .btn-outline {
-            border-color: #222;
-            color: #222;
-        }
-        
-        body.light-mode .btn-outline:hover {
-            background-color: #222;
-            color: white;
-        }
-        
-        body.light-mode .disclaimer {
-            background-color: #F5F5F5 !important;
-            color: #888 !important;
-        }
-        
-        body.light-mode #quoteText {
-            color: #4b5563;
-        }
-        
-        body.light-mode #stabilityText {
-            background-color: #dbeafe !important;
-            color: #1e3a8a !important;
-        }
-        
-        body.light-mode .text-gray-600 {
-            color: #4b5563 !important;
-        }
-        
-        body.light-mode .text-gray-700 {
-            color: #374151 !important;
-        }
-        
-        body.light-mode .text-sm {
-            color: #4b5563;
-        }
-        
-        body.light-mode #selectedCardLabel {
-            color: #374151;
-        }
-        
-        body.light-mode #wordMeaning,
-        body.light-mode #triviaText {
-            color: #374151 !important;
-        }
-        
-        body.light-mode #triviaSource {
-            color: #6b7280 !important;
-        }
-        
-        body.light-mode #triviaSource a {
-            color: #2563eb !important;
-        }
-        
-        body.light-mode .chip.bg-gray-100 {
-            background-color: #f3f4f6 !important;
-            color: #1f2937 !important;
-        }
-        
-        body.light-mode .chip.bg-blue-50 {
-            background-color: #eff6ff !important;
-            color: #1e40af !important;
-        }
-        
-        body.light-mode .chip.bg-purple-50 {
-            background-color: #faf5ff !important;
-            color: #7c3aed !important;
-        }
-        
-        /* Fix light text on light backgrounds in dark mode */
-        #welcomeMessage,
-        #notFoundMessage {
-            color: inherit;
-        }
-        
-        body.light-mode #welcomeMessage,
-        body.light-mode #notFoundMessage {
-            color: #4b5563;
-        }
-        
-        /* Ensure all text in cards is visible - use !important to override Tailwind */
-        .section-card h2,
-        .section-card h3,
-        .section-card p,
-        .section-card div {
-            color: #e5e5e5 !important;
-        }
-        
-        body.light-mode .section-card h2,
-        body.light-mode .section-card h3,
-        body.light-mode .section-card p,
-        body.light-mode .section-card div {
-            color: #222 !important;
-        }
-        
-        /* Fix welcome/not found messages */
-        #welcomeMessage p,
-        #notFoundMessage p {
-            color: #bbb;
-        }
-        
-        body.light-mode #welcomeMessage p,
-        body.light-mode #notFoundMessage p {
-            color: #4b5563;
-        }
-        
-        /* Color name text */
-        #colorName {
-            color: #e5e5e5;
-        }
-        
-        body.light-mode #colorName {
-            color: #222;
-        }
-        
-        
-        .dark-mode-toggle {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background-color: #4a4a4a;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        body.light-mode .dark-mode-toggle {
-            background-color: #ddd;
-        }
-        
-        .dark-mode-toggle-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 24px;
-            height: 24px;
-            background-color: #667eea;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-        
-        body.light-mode .dark-mode-toggle-slider {
-            transform: translateX(30px);
-            background-color: white;
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.4s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .toast {
-            animation: toast 2s ease-in-out;
-        }
-        
-        @keyframes toast {
-            0%, 100% { opacity: 0; transform: translateY(10px); }
-            10%, 90% { opacity: 1; transform: translateY(0); }
-        }
-        
-        .color-swatch {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            border: 1px solid rgba(0,0,0,0.1);
-            display: inline-block;
-            vertical-align: middle;
-        }
-        
-        .chip {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 500;
-            margin: 4px;
-        }
-        
-        .element-water { background-color: #E0F2F7; color: #006064; }
-        .element-earth { background-color: #FFF8E1; color: #E65100; }
-        .element-fire { background-color: #FCE4EC; color: #880E4F; }
-        .element-air { background-color: #ECEFF1; color: #263238; }
-        
-        .section-card {
-            background: #2a2a2a;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            color: #e5e5e5;
-        }
-        
-        .section-heading {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-        }
-        
-        .btn-primary {
-            background-color: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #5568d3;
-        }
-        
-        body.light-mode .btn-primary {
-            background-color: #222;
-            color: white;
-        }
-        
-        body.light-mode .btn-primary:hover {
-            background-color: #444;
-        }
-        
-        .btn-secondary {
-            background-color: #E0E0E0;
-            color: #222;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #D0D0D0;
-        }
-        
-        select {
-            padding: 10px 16px;
-            border-radius: 6px;
-            border: 1px solid #4a4a4a;
-            background-color: #3a3a3a;
-            color: #e5e5e5;
-            font-size: 14px;
-            cursor: pointer;
-            min-width: 150px;
-        }
-        
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        select option {
-            background-color: #3a3a3a;
-            color: #e5e5e5;
-        }
-        
-        body.light-mode select {
-            background-color: white;
-            border-color: #D0D0D0;
-            color: #222;
-        }
-        
-        body.light-mode select:focus {
-            border-color: #222;
-        }
-        
-        body.light-mode select option {
-            background-color: white;
-            color: #222;
-        }
-        
-        .disclaimer {
-            font-size: 12px;
-            color: #888;
-            line-height: 1.5;
-            padding: 12px;
-            background-color: #F5F5F5;
-            border-radius: 6px;
-            margin-top: 12px;
-        }
-        
-        .lucky-number-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white !important;
-            font-size: 24px;
-            font-weight: 700;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-        
-        body.light-mode .lucky-number-badge {
-            color: white !important;
-        }
-        
-        body.light-mode #luckyNumberBadge {
-            color: white !important;
-        }
-        
-        .lucky-number-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #bbb;
-            margin-top: 4px;
-        }
-        
-        body.light-mode .lucky-number-label {
-            color: #666;
-        }
-    </style>
+    <link rel="canonical" href="https://ix52.maiba.studio/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="min-h-screen">
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg hidden z-50">
-        Copied!
-    </div>
-
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div class="max-w-5xl mx-auto px-4 py-6">
-            <div class="flex items-center justify-between mb-4">
-                <h1 class="text-2xl font-bold">IX:52 Oracle</h1>
-                <div class="flex items-center gap-2">
-                    <span class="text-sm text-gray-600" id="darkModeLabel">🌙</span>
-                    <div class="dark-mode-toggle" onclick="toggleDarkMode()" role="button" aria-label="Toggle light mode" tabindex="0">
-                        <div class="dark-mode-toggle-slider">
-                            <span id="toggleIcon">🌙</span>
-                        </div>
-                    </div>
-                </div>
+<body>
+    <a class="skip" href="#content">Skip to content</a>
+    <div id="live" class="sr-only" aria-live="polite"></div>
+    <header class="site-header">
+        <div class="wrap header-inner">
+            <a class="brand" href="#oracle">
+                <strong>IX:52</strong>
+                <span>The Hermit Returns / 2026</span>
+            </a>
+            <button class="ghost nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="siteNav">Menu</button>
+            <nav class="nav" id="siteNav" aria-label="Primary">
+                <a href="#oracle">Oracle</a>
+                <a href="#artists">Artists</a>
+                <a href="#practice">The Practice</a>
+                <a href="#about">About</a>
+            </nav>
+            <div class="header-tools">
+                <button class="ghost" id="lowStimToggle" type="button" aria-pressed="false">Quiet view</button>
             </div>
-            
-            <!-- Card Selector -->
-            <div class="flex flex-wrap gap-3 items-center">
-                <div>
-                    <label for="suitSelect" class="block text-xs font-medium text-gray-600 mb-1">Suit</label>
-                    <select id="suitSelect">
-                        <option value="">Select suit...</option>
-                        <option value="Hearts">Hearts</option>
-                        <option value="Diamonds">Diamonds</option>
-                        <option value="Clubs">Clubs</option>
-                        <option value="Spades">Spades</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label for="rankSelect" class="block text-xs font-medium text-gray-600 mb-1">Rank</label>
-                    <select id="rankSelect">
-                        <option value="">Select rank...</option>
-                        <option value="Ace">Ace</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        <option value="Jack">Jack</option>
-                        <option value="Queen">Queen</option>
-                        <option value="King">King</option>
-                    </select>
-                </div>
-                
-                <div class="mt-5">
-                    <button id="randomBtn" class="btn btn-outline">Random Card</button>
-                </div>
-            </div>
-            
-            <div id="selectedCardLabel" class="mt-3 text-sm font-medium text-gray-700"></div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-5xl mx-auto px-4 py-8">
-        <!-- Welcome Message -->
-        <div id="welcomeMessage" class="text-center py-12">
-            <p class="text-lg text-gray-600">Select a suit and rank to view your card</p>
-        </div>
+    <main id="content">
+        <section class="view" id="view-oracle">
+            <div class="wrap">
+                <p class="kicker">IX:52 — The Hermit Returns</p>
+                <h1>Fifty-two days. Fifty-two artworks. One ongoing practice of becoming.</h1>
+                <p class="lede">Draw a card. Encounter an artwork. Choose a meaningful verb. Make room to recover. Return with what you’ve learned.</p>
+                <p>Live in verbs. Move with care. Know how to return.</p>
+                <div class="selector">
+                    <div class="selector-label" id="suitLabel">Suit</div>
+                    <div class="choice-row" id="suitGroup" role="radiogroup" aria-labelledby="suitLabel"></div>
+                    <div class="selector-label" id="rankLabel">Rank</div>
+                    <div class="choice-row" id="rankGroup" role="radiogroup" aria-labelledby="rankLabel"></div>
+                    <div class="selector-actions">
+                        <button class="ghost" id="randomBtn" type="button">Explore at random</button>
+                        <button class="text-btn" id="clearBtn" type="button">Clear selection</button>
+                    </div>
+                    <p class="fine">Random selection is optional. The practice uses the physical deck.</p>
+                </div>
+                <div id="welcome" class="panel">
+                    <h2>Choose the card you drew.</h2>
+                    <p>Look at the physical card first. Then match its suit and rank here. Nothing is assigned until you choose.</p>
+                </div>
+                <div id="invalid" class="panel" hidden>
+                    <h2>That card link does not match the deck.</h2>
+                    <p>Use a suit and a rank, for example <code>?card=hearts_7</code>.</p>
+                </div>
+                <div id="oracleMount"></div>
+            </div>
+        </section>
 
-        <!-- Card Not Found -->
-        <div id="notFoundMessage" class="text-center py-12 hidden">
-            <p class="text-lg text-red-600">No card found for this combination.</p>
-        </div>
+        <section class="view" id="view-artists" hidden>
+            <div class="wrap">
+                <p class="kicker">The deck</p>
+                <h1>A Gallery of Fifty-Two</h1>
+                <p class="lede">Fifty-two cards. Fifty-two visual voices. One deck made through collective imagination.</p>
+                <div class="filters">
+                    <input id="gallerySearch" type="search" placeholder="Search artists" aria-label="Search artists">
+                    <select id="gallerySuit" aria-label="Filter by suit">
+                        <option value="">All suits</option>
+                        <option>Hearts</option>
+                        <option>Diamonds</option>
+                        <option>Clubs</option>
+                        <option>Spades</option>
+                    </select>
+                    <select id="galleryRank" aria-label="Filter by rank"></select>
+                    <label class="choice"><input id="galleryExclusive" type="checkbox"> Code:RED exclusive</label>
+                </div>
+                <div class="gallery" id="galleryGrid"></div>
+                <p id="galleryEmpty" hidden>No cards match. Clear a filter or try another name.</p>
+                <div id="beyond"></div>
+            </div>
+        </section>
 
-        <!-- Card View -->
-        <div id="cardView" class="hidden">
-            <!-- Card Overview -->
-            <section class="section-card fade-in">
-                <div class="flex flex-wrap items-start justify-between gap-6 mb-4">
-                    <div class="flex-1">
-                        <h2 id="cardTitle" class="text-3xl font-bold mb-4"></h2>
-                        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span id="elementChip" class="chip"></span>
-                            <span id="verbesqueChip" class="chip bg-gray-100 text-gray-800"></span>
-                            <span id="directionChip" class="chip bg-gray-100 text-gray-800"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col items-center">
-                        <div id="luckyNumberBadge" class="lucky-number-badge"></div>
-                        <div class="lucky-number-label">Lucky Number</div>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <span class="text-sm font-medium text-gray-600">Day's Color: </span>
-                    <span id="colorSwatch" class="color-swatch"></span>
-                    <span id="colorName" class="text-sm font-medium ml-2"></span>
-                </div>
-                
-                <div class="flex flex-wrap gap-2">
-                    <span id="suitThemeChip" class="chip bg-blue-50 text-blue-800"></span>
-                    <span id="rankArchetypeChip" class="chip bg-purple-50 text-purple-800"></span>
-                </div>
-            </section>
+        <section class="view" id="view-practice" hidden>
+            <div class="wrap">
+                <p class="kicker">Sense, choose, enact, restore, renew</p>
+                <h1>The practice is a return, not a score.</h1>
+                <p class="lede">The 2026 window runs from 17 November 2026 through 7 January 2027, in Asia/Manila. 8 January is an optional epilogue, not a fifty-third card.</p>
+                <div id="practiceMount"></div>
+            </div>
+        </section>
 
-            <!-- Oracle & Quote -->
-            <section class="section-card fade-in">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <div class="section-heading">Oracle</div>
-                        <p id="oracleText" class="text-base leading-relaxed"></p>
-                    </div>
-                    <div>
-                        <div class="section-heading">Quote</div>
-                        <p id="quoteText" class="text-base italic text-gray-700 leading-relaxed mb-2"></p>
-                        <button onclick="copyToClipboard('quote')" class="btn btn-secondary text-xs">Copy Quote</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Daily Practice -->
-            <section class="section-card fade-in">
-                <h3 class="text-xl font-bold mb-4">Daily Practice</h3>
-                
-                <div class="space-y-4">
-                    <div>
-                        <div class="section-heading">Mantra</div>
-                        <p id="mantraText" class="text-base font-medium mb-2"></p>
-                        <button onclick="copyToClipboard('mantra')" class="btn btn-secondary text-xs">Copy Mantra</button>
-                    </div>
-                    
-                    <div>
-                        <div class="section-heading">Tiny Action</div>
-                        <p id="tinyActionText" class="text-base"></p>
-                    </div>
-                    
-                    <div>
-                        <div class="section-heading">Journal Prompt</div>
-                        <p id="journalPromptText" class="text-base mb-2"></p>
-                        <button onclick="copyToClipboard('journal')" class="btn btn-secondary text-xs">Copy Prompt</button>
-                    </div>
-                    
-                    <div>
-                        <div class="section-heading">Body Cue</div>
-                        <p id="bodyCueText" class="text-base font-medium"></p>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <button onclick="copyToClipboard('all')" class="btn btn-primary">Copy All Practice</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Verbesque Layer -->
-            <section class="section-card fade-in">
-                <div class="section-heading">Verbesque Verb</div>
-                <div id="verbesqueVerb" class="text-2xl font-bold mb-2"></div>
-                <p id="verbesqueCue" class="text-base text-gray-700"></p>
-            </section>
-
-            <!-- Word & Trivia -->
-            <section class="section-card fade-in">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <div class="section-heading">Word of the Day</div>
-                        <div id="wordOfDay" class="text-lg font-semibold mb-1"></div>
-                        <p id="wordMeaning" class="text-sm text-gray-700"></p>
-                    </div>
-                    <div>
-                        <div class="section-heading">Trivia</div>
-                        <p id="triviaText" class="text-sm text-gray-700 mb-1"></p>
-                        <p id="triviaSource" class="text-xs text-gray-500"></p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Stability Check -->
-            <section class="section-card fade-in">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-lg font-bold">Stability Check (Bipolar Context)</h3>
-                    <button id="toggleStabilityBtn" onclick="toggleStability()" class="btn btn-outline text-xs">
-                        Show
-                    </button>
-                </div>
-                
-                <p class="text-sm text-gray-600 mb-3">A personal self-check prompt. Not medical advice.</p>
-                
-                <div id="stabilityContent" class="hidden">
-                    <p id="stabilityText" class="text-base mb-3 p-4 bg-blue-50 rounded-lg"></p>
-                </div>
-            </section>
-        </div>
+        <section class="view" id="view-about" hidden>
+            <div class="wrap prose">
+                <p class="kicker">Maiba Studio · 2026 edition</p>
+                <h1>About IX:52</h1>
+                <section>
+                    <h2>What is IX:52?</h2>
+                    <p>IX:52 is a 52-day intentional-living practice. It joins the Hermit of tarot’s ninth major arcana, a standard playing-card deck, a short personal ritual, and the Verbesque philosophy of sustainable motion. You draw a physical card, meet the artist who made that face, and choose one action that can survive contact with your actual day.</p>
+                    <p>The 2026 edition uses RunIt Decks’ Bicycle Sari-Sari Code:RED playing cards, a collaboration among Filipino artists. IX:52 writes the practice. The artists made the pictures. Those are different kinds of authorship.</p>
+                </section>
+                <section>
+                    <h2>Why the Hermit?</h2>
+                    <p>The Hermit is an image of reflection, orientation, and chosen solitude. In this edition the Hermit returns. Solitude is for seeing clearly, not for disappearing from care, collaboration, or the people who help you. You come back to the world with attention, credit, and a movement you can keep.</p>
+                </section>
+                <section>
+                    <h2>Why 52 cards?</h2>
+                    <p>A standard deck has fifty-two faces. The practice draws through them without treating a missed day as a moral failure. Hearts ask about relating, diamonds about stewardship, clubs about making, and spades about discernment. Jokers are credited, and they are not practice days.</p>
+                </section>
+                <section>
+                    <h2>What changed in 2026?</h2>
+                    <p>The 2025 practice emphasized discipline, consistency, and four verbs: Guard, Forge, Restore, and Ground. That edition remains archived. The 2026 practice asks a quieter question: can an intention become an action that does not spend the person doing it?</p>
+                    <p>Progress is information. Stillness can be a responsible action. Returning matters more than an unbroken streak.</p>
+                </section>
+                <section>
+                    <h2>The five movements of Verbesque</h2>
+                    <p><strong>Sense.</strong> What is true about this moment? Look at the card and at your capacity.</p>
+                    <p><strong>Choose.</strong> What movement is worth making? Take the day’s verb and one proportionate action.</p>
+                    <p><strong>Enact.</strong> How will intention encounter reality? Speak an intention, then do something small enough to finish.</p>
+                    <p><strong>Restore.</strong> What must remain protected? Rest is available even if the task is unfinished.</p>
+                    <p><strong>Renew.</strong> What did reality teach? Close the day when you decide it is closed.</p>
+                </section>
+                <section>
+                    <h2>How to begin each day</h2>
+                    <p>Draw from the physical deck. Select that suit and rank. Look before you read. Pick a capacity: expansive, ordinary, constrained, or recovery. These words describe the day. They do not rank you. Do one action, or the smaller one, or rest. Write if you want. Close the practice when you are ready.</p>
+                </section>
+                <section>
+                    <h2>How to recognize the artists</h2>
+                    <p>Every standard card names its maker. A social link appears only when RunIt Decks’ own gallery links that artist to a profile. If no profile is published there, IX:52 does not invent one. The link back to the deck is a source, not a personal account.</p>
+                    <p>Five artworks are Code:RED exclusives: Heart Hunter, King of Hearts I, Club Queen II, Queen of Blood Diamonds, and The Sour Knight. That label describes the edition, not the artist’s career. Queen of Diamonds in this edition is Nicolo Nimor. Jack of Spades is Jappy Agoncillo.</p>
+                </section>
+                <section>
+                    <h2>Neurodivergence and changing capacity</h2>
+                    <p>People differ in attention, sensory load, executive function, emotion, and available energy. The interface keeps choices few, journaling optional, and motion quiet. A smaller action is a complete practice. Rest is never locked behind a task.</p>
+                    <p>If you live with bipolar disorder, keep the care plan you already have with a clinician. This site does not diagnose episodes, read productivity as mania, suggest medication changes, or treat a sleepless expansion as a breakthrough. If warning signs appear, contact the support you have already agreed on. Sleep and stable routines stay protected. Card colors and draws have no clinical meaning.</p>
+                </section>
+                <section>
+                    <h2>What it means to return</h2>
+                    <p>An interruption does not cancel the practice. A day can be recorded, not recorded, a return, a recovery, or a completed reflection. None of those words mean you failed. The practice is complete when you decide to close it.</p>
+                </section>
+                <section>
+                    <h2>Spellcraft, plainly</h2>
+                    <p>Intention-based spellcraft, in this practice, means lining up attention, choice, resources, and action with a purpose you can name. A card is a prompt, not a command, and not a prediction. Words like intention, invocation, offering, and release always point back to an ordinary act and an ethical limit.</p>
+                </section>
+                <section>
+                    <h2>Credits and sources</h2>
+                    <p>IX:52 is published by Maiba Studio. The 2025 readings remain available in the <a href="archive.html">2025 archive</a>.</p>
+                    <p>Playing-card artworks are by their respective artists. Bicycle Sari-Sari Code:RED is produced by <a href="https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards" target="_blank" rel="noopener noreferrer">RunIt Decks</a>. IX:52 is not endorsed by the artists, Bicycle, or RunIt Decks.</p>
+                    <p>Individual card faces are identified in the project’s image manifest and are not displayed here, because a public product gallery is not the same as permission to reproduce the art.</p>
+                    <p>Notes you write stay in this browser unless you export them. They are not added to Share the Day.</p>
+                </section>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-12">
-        <div class="max-w-5xl mx-auto px-4 py-6 text-center">
-            <p class="text-sm text-gray-600 mb-2">
-                IX:52 — 2025 · 
-                <a href="https://rchetype.xyz" target="_blank" rel="noopener noreferrer" class="hover:underline" style="color: #667eea;">@rchetypex</a>
-            </p>
-            <p class="text-xs text-gray-500">
-                This tool is for personal reflection and does not replace professional mental health care.
-            </p>
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>© <span id="footerYear"></span> Maiba Studio. IX:52 — The Hermit Returns.</p>
+            <p>Playing-card artworks by their respective artists. <a href="https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards" target="_blank" rel="noopener noreferrer">Bicycle Sari-Sari Code:RED</a> produced by RunIt Decks.</p>
+            <p>IX:52 is an independent practice and is not endorsed by the artists, Bicycle, or RunIt Decks.</p>
         </div>
     </footer>
 
-    <script src="data.js"></script>
+    <dialog id="viewer">
+        <button class="ghost" id="viewerClose" type="button">Close</button>
+        <div id="viewerBody"></div>
+    </dialog>
+    <div id="toast" class="toast" hidden role="status">Copied</div>
+
+    <script src="data/editions/2026/meta.js"></script>
+    <script src="data/editions/2026/artists.js"></script>
+    <script src="data/editions/2026/assets.js"></script>
+    <script src="data/editions/2026/oracle.js"></script>
     <script src="app.js"></script>
+    <script>
+        document.getElementById("footerYear").textContent = new Intl.DateTimeFormat("en-US", {
+            timeZone: "Asia/Manila",
+            year: "numeric"
+        }).format(new Date());
+    </script>
+    <noscript>
+        <p class="wrap">IX:52 needs JavaScript to select cards. The reading texts are in this page’s scripts and are not sent to an account.</p>
+    </noscript>
 </body>
 </html>
-

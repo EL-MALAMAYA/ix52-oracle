@@ -1,82 +1,31 @@
-# IX:52 Oracle
+# IX:52 — The Hermit Returns
 
-A minimalist single-page web app for the IX:52 daily card practice. Draw a card, receive guidance, and track your daily ritual with emotional support, tiny actions, journal prompts, movement cues, and gentle self-regulation tools.
+A static site for the 2026 IX:52 practice, published by Maiba Studio. Draw a physical card from Bicycle Sari-Sari Code:RED, choose its suit and rank, and follow a five-part Verbesque reading: Sense, Choose, Enact, Restore, Renew.
 
-## Features
+The 2025 readings are unchanged in `data.js` and `data/editions/2025/oracle.js`. Open `archive.html` to read them. They are not the default edition.
 
-- **Card Selection**: Choose by suit and rank, or draw a random card
-- **Daily Practice**: Mantra, tiny action, journal prompt, and body cue
-- **Verbesque Layer**: Restore, Ground, Forge, or Guard your day
-- **Word & Trivia**: Learn vocabulary and interesting facts
-- **Stability Check**: Gentle bipolar self-check prompts (collapsible, supportive)
-- **Copy to Clipboard**: Easily copy mantras, prompts, or all practice elements
-- **Responsive Design**: Works beautifully on desktop and mobile
-- **Element-Based Colors**: Visual anchors tied to Water, Earth, Fire, and Air
+## Use
 
-## Quick Start
-
-1. Open `index.html` in any modern web browser
-2. Select a suit and rank (or click "Random Card")
-3. Read your oracle guidance and daily practice
-4. Use the copy buttons to transfer content to your journal or whiteboard
-
-## Structure
+Open `index.html` in a browser, or serve the folder:
 
 ```
-ix52-oracle/
-├── index.html       # Main HTML structure
-├── app.js           # Application logic
-├── data.js          # Oracle card data (52 cards)
-└── README.md        # This file
+npx serve .
 ```
 
-## Technology
+A direct link looks like `index.html?card=hearts_7`.
 
-- **HTML5**: Semantic markup for accessibility
-- **Vanilla JavaScript**: No frameworks, fast and lightweight
-- **Tailwind CSS**: Via CDN for rapid styling
-- **Static Site**: No backend required, deploy anywhere
+Notes and draw history stay in the browser’s local storage. Export and delete them from The Practice page. Share the Day never includes private notes.
 
-## Deployment
+## Check the data
 
-This is a static site and can be deployed to:
-- **Netlify**: Drag and drop the folder
-- **Vercel**: Connect your Git repository
-- **GitHub Pages**: Push to a repo and enable Pages
-- **Local**: Just open `index.html` in your browser
+```
+node scripts/validate.js
+```
 
-## Usage
+The script confirms the 52-card Code:RED roster, refuses unlicensed image display, and reports social profiles the official gallery did not link.
 
-### Morning Ritual
-1. Draw a physical playing card
-2. Open the IX:52 Oracle
-3. Select the matching suit and rank
-4. Copy the practice elements to your whiteboard/journal
-5. Use the body cue for movement
-6. Glance at the stability check if needed
+Card artwork identified on the RunIt Decks gallery is listed in `data/editions/2026/assets.js` and is not embedded. A public product image is not treated as permission to reproduce it.
 
-### In-Day Check-In
-1. Return to today's card when dysregulated
-2. Re-read the oracle text and mantra
-3. Review the bipolar self-check prompt
-4. Take the tiny action to recenter
+## Stack
 
-### Study & Exploration
-1. Browse cards across suits and elements
-2. Learn new vocabulary (word of the day)
-3. Enjoy trivia as micro-delights
-
-## Mental Health Note
-
-The stability check feature is for personal reflection and does not replace professional mental health care. If you feel unsafe, contact your clinician or local emergency services.
-
-## About IX:52
-
-IX:52 is a 52-day discipline and self-knowledge practice using a standard deck of playing cards. Each card maps to:
-- **4 Elements**: Water (Hearts), Earth (Diamonds), Fire (Clubs), Air (Spades)
-- **4 Verbesque Verbs**: Restore, Ground, Forge, Guard
-- **13 Rank Archetypes**: From beginnings to completion
-
----
-
-**IX:52 — 2025**
+HTML, CSS, and vanilla JavaScript. No build step and no account.

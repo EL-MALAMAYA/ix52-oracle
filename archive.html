@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IX:52 2025 archive | Maiba Studio</title>
+    <meta name="description" content="Archived 2025 IX:52 readings. The current practice is the 2026 edition.">
+    <link rel="icon" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap header-inner">
+            <a class="brand" href="index.html">
+                <strong>IX:52</strong>
+                <span>2025 archive</span>
+            </a>
+            <nav class="nav" aria-label="Archive">
+                <a href="index.html">2026 edition</a>
+            </nav>
+        </div>
+    </header>
+    <main class="view">
+        <div class="wrap">
+            <p class="kicker">Archived edition</p>
+            <h1>IX:52, 2025</h1>
+            <p class="lede">This archive keeps the earlier Guard, Forge, Restore, and Ground readings. It is not the current practice. The 2026 edition uses Sense, Choose, Enact, Restore, and Renew.</p>
+            <p class="fine">The 2025 edition was first released under the name @rchetypex. Maiba Studio now publishes IX:52.</p>
+            <div class="selector">
+                <label for="archiveSelect">Card</label>
+                <select id="archiveSelect"></select>
+            </div>
+            <article id="archiveCard" class="panel" hidden></article>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="wrap">
+            <p>© <span id="footerYear"></span> Maiba Studio. IX:52 — The Hermit Returns.</p>
+        </div>
+    </footer>
+    <script src="data.js"></script>
+    <script src="archive.js"></script>
+    <script>
+        document.getElementById("footerYear").textContent = new Intl.DateTimeFormat("en-US", {
+            timeZone: "Asia/Manila",
+            year: "numeric"
+        }).format(new Date());
+    </script>
+</body>
+</html>

@@ -22,10 +22,7 @@
     <div id="live" class="sr-only" aria-live="polite"></div>
     <header class="site-header">
         <div class="wrap header-inner">
-            <a class="brand" href="#oracle">
-                <strong>IX:52</strong>
-                <span>The Hermit Returns / 2026</span>
-            </a>
+            <a class="brand" href="#oracle"><strong>IX:52</strong></a>
             <button class="ghost nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="siteNav">Menu</button>
             <nav class="nav" id="siteNav" aria-label="Primary">
                 <a href="#oracle">Oracle</a>
@@ -33,8 +30,9 @@
                 <a href="#practice">The Practice</a>
                 <a href="#about">About</a>
             </nav>
-            <div class="header-tools">
-                <button class="ghost" id="lowStimToggle" type="button" aria-pressed="false">Quiet view</button>
+            <div class="theme-switch" role="group" aria-label="Color mode">
+                <button type="button" id="themeLight" data-theme-choice="light" aria-pressed="true">Light</button>
+                <button type="button" id="themeDark" data-theme-choice="dark" aria-pressed="false">Dark</button>
             </div>
         </div>
     </header>
@@ -42,25 +40,24 @@
     <main id="content">
         <section class="view" id="view-oracle">
             <div class="wrap">
-                <p class="kicker">IX:52 — The Hermit Returns</p>
-                <h1>Fifty-two days. Fifty-two artworks. One ongoing practice of becoming.</h1>
-                <p class="lede">Draw a card. Encounter an artwork. Choose a meaningful verb. Make room to recover. Return with what you’ve learned.</p>
-                <p>Live in verbs. Move with care. Know how to return.</p>
                 <div class="selector">
-                    <div class="selector-label" id="suitLabel">Suit</div>
-                    <div class="choice-row" id="suitGroup" role="radiogroup" aria-labelledby="suitLabel"></div>
-                    <div class="selector-label" id="rankLabel">Rank</div>
-                    <div class="choice-row" id="rankGroup" role="radiogroup" aria-labelledby="rankLabel"></div>
+                    <div class="selector-top">
+                        <div>
+                            <div class="selector-label" id="suitLabel">Suit</div>
+                            <div class="choice-row" id="suitGroup" role="radiogroup" aria-labelledby="suitLabel"></div>
+                        </div>
+                        <div>
+                            <div class="selector-label" id="rankLabel">Rank</div>
+                            <div class="choice-row" id="rankGroup" role="radiogroup" aria-labelledby="rankLabel"></div>
+                        </div>
+                    </div>
                     <div class="selector-actions">
                         <button class="ghost" id="randomBtn" type="button">Explore at random</button>
                         <button class="text-btn" id="clearBtn" type="button">Clear selection</button>
+                        <p class="selector-note">Match the card you drew. Random is optional.</p>
                     </div>
-                    <p class="fine">Random selection is optional. The practice uses the physical deck.</p>
                 </div>
-                <div id="welcome" class="panel">
-                    <h2>Choose the card you drew.</h2>
-                    <p>Look at the physical card first. Then match its suit and rank here. Nothing is assigned until you choose.</p>
-                </div>
+                <p id="welcome" class="hint">Choose a suit and a rank to open the card.</p>
                 <div id="invalid" class="panel" hidden>
                     <h2>That card link does not match the deck.</h2>
                     <p>Use a suit and a rank, for example <code>?card=hearts_7</code>.</p>
@@ -157,7 +154,7 @@
                     <h2>Credits and sources</h2>
                     <p>IX:52 is published by Maiba Studio. The 2025 readings remain available in the <a href="archive.html">2025 archive</a>.</p>
                     <p>Playing-card artworks are by their respective artists. Bicycle Sari-Sari Code:RED is produced by <a href="https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards" target="_blank" rel="noopener noreferrer">RunIt Decks</a>. IX:52 is not endorsed by the artists, Bicycle, or RunIt Decks.</p>
-                    <p>Individual card faces are identified in the project’s image manifest and are not displayed here, because a public product gallery is not the same as permission to reproduce the art.</p>
+                    <p>A card picture appears when a direct image link is entered for that card. Artist profiles that were not confirmed stay blank until a link is added.</p>
                     <p>Notes you write stay in this browser unless you export them. They are not added to Share the Day.</p>
                 </section>
             </div>
@@ -182,6 +179,7 @@
     <script src="data/editions/2026/artists.js"></script>
     <script src="data/editions/2026/assets.js"></script>
     <script src="data/editions/2026/oracle.js"></script>
+    <script src="data/editions/2026/manual.js"></script>
     <script src="app.js"></script>
     <script>
         document.getElementById("footerYear").textContent = new Intl.DateTimeFormat("en-US", {

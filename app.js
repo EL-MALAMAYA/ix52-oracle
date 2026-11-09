@@ -125,7 +125,40 @@ function getCard(code) {
 }
 
 function canShowImage(asset) {
-    return Boolean(asset && asset.display_permitted === true && asset.image_rights_status === "licensed");
+    return Boolean(asset && asset.display_permitted === true && asset.image_url);
+}
+
+function applyManualLinks() {
+    if (typeof MANUAL_LINKS_2026 === "undefined") return;
+    MANUAL_LINKS_2026.forEach(function (row) {
+        var social = (row.social_url || "").trim();
+        var image = (row.image_url || "").trim();
+        if (row.card_code && artistByCard[row.card_code]) {
+            var artist = artistByCard[row.card_code];
+            if (social) {
+                artist.social_url = social;
+                artist.social_platform = "instagram";
+                artist.social_verification_status = "verified";
+            } else {
+                artist.social_url = null;
+                artist.social_platform = null;
+                artist.social_verification_status = "unverified";
+            }
+        } else if (row.artist_id && artistById[row.artist_id] && social) {
+            artistById[row.artist_id].social_url = social;
+            artistById[row.artist_id].social_platform = "instagram";
+            artistById[row.artist_id].social_verification_status = "verified";
+        }
+        var asset = row.card_code ? assetByCard[row.card_code] : null;
+        if (!asset && row.asset_id) {
+            asset = ASSETS_2026.filter(function (item) { return item.asset_id === row.asset_id; })[0];
+        }
+        if (asset && image) {
+            asset.image_url = image;
+            asset.display_permitted = true;
+            asset.image_rights_status = "manual";
+        }
+    });
 }
 
 function el(tag, className, text) {
@@ -742,10 +775,19 @@ function renderBeyond() {
         var assets = ASSETS_2026.filter(function (asset) { return asset.artist_id === artist.artist_id; });
         assets.forEach(function (asset) {
             var tile = el("article", "tile");
-            var plate = el("div", "plate");
-            plate.appendChild(el("p", "meta", asset.image_asset_type.replace("-", " ")));
-            plate.appendChild(el("p", "withheld", "Artwork not reproduced."));
-            tile.appendChild(plate);
+            if (canShowImage(asset)) {
+                var image = document.createElement("img");
+                image.className = "art-image";
+                image.src = asset.image_url;
+                image.alt = asset.image_alt;
+                image.loading = "lazy";
+                tile.appendChild(image);
+            } else {
+                var plate = el("div", "plate");
+                plate.appendChild(el("p", "meta", asset.image_asset_type.replace("-", " ")));
+                plate.appendChild(el("p", "withheld", "Artwork not reproduced."));
+                tile.appendChild(plate);
+            }
             var caption = el("div", "tile-caption");
             caption.appendChild(el("strong", "", artist.artist_name));
             caption.appendChild(el("div", "", artist.contribution));
@@ -866,13 +908,21 @@ function exportData() {
     URL.revokeObjectURL(url);
 }
 
+function applyTheme(theme) {
+    var next = theme === "dark" ? "dark" : "light";
+    document.body.setAttribute("data-theme", next);
+    document.getElementById("themeLight").setAttribute("aria-pressed", next === "light" ? "true" : "false");
+    document.getElementById("themeDark").setAttribute("aria-pressed", next === "dark" ? "true" : "false");
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", next === "dark" ? "#121110" : "#F5F2EB");
+    store.theme = next;
+}
+
 function init() {
+    applyManualLinks();
     state.capacity = store.capacity || "ordinary";
-    state.lowStim = Boolean(store.lowStim);
     state.saveLocal = Boolean(store.saveLocal);
-    document.body.classList.toggle("quiet", state.lowStim);
-    document.getElementById("lowStimToggle").setAttribute("aria-pressed", state.lowStim ? "true" : "false");
-    document.getElementById("lowStimToggle").textContent = state.lowStim ? "Quiet view on" : "Quiet view";
+    applyTheme(store.theme || "light");
     buildChoices();
     var requested = new URLSearchParams(location.search).get("card");
     if (requested) setCard(requested, { focus: false });
@@ -889,13 +939,11 @@ function init() {
         nav.classList.toggle("is-open", open);
         this.setAttribute("aria-expanded", open ? "true" : "false");
     });
-    document.getElementById("lowStimToggle").addEventListener("click", function () {
-        state.lowStim = !state.lowStim;
-        store.lowStim = state.lowStim;
-        saveStore();
-        document.body.classList.toggle("quiet", state.lowStim);
-        this.setAttribute("aria-pressed", state.lowStim ? "true" : "false");
-        this.textContent = state.lowStim ? "Quiet view on" : "Quiet view";
+    document.querySelectorAll("[data-theme-choice]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            applyTheme(button.getAttribute("data-theme-choice"));
+            saveStore();
+        });
     });
     ["gallerySearch", "gallerySuit", "galleryRank", "galleryExclusive"].forEach(function (id) {
         document.getElementById(id).addEventListener("input", renderGallery);

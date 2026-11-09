@@ -27,13 +27,18 @@ body {
     font-family: var(--sans);
     font-size: 17px;
     line-height: 1.6;
+    color-scheme: light;
 }
 
-body.quiet {
-    --code-red: #205b63;
-    --electric-yellow: #d9d3c7;
-    --hot-pink: #205b63;
-    --violet: #205b63;
+body[data-theme="dark"] {
+    --background: #121110;
+    --surface: #1c1a17;
+    --ink: #f4f0e8;
+    --muted: #b7b0a6;
+    --border: #3c3833;
+    --focus: #9fd4d6;
+    --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
 }
 
 img { max-width: 100%; height: auto; }
@@ -84,7 +89,7 @@ button { cursor: pointer; }
     position: sticky;
     top: 0;
     z-index: 10;
-    background: rgba(245, 242, 235, 0.94);
+    background: color-mix(in srgb, var(--background) 94%, transparent);
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(8px);
 }
@@ -94,7 +99,27 @@ button { cursor: pointer; }
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 4.25rem;
+    min-height: 3.25rem;
+}
+
+.theme-switch {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    flex: none;
+}
+
+.theme-switch button {
+    border: 0;
+    background: transparent;
+    padding: 0.28rem 0.7rem;
+    font-size: 0.85rem;
+}
+
+.theme-switch button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--background);
 }
 
 .brand {
@@ -107,7 +132,7 @@ button { cursor: pointer; }
 
 .brand strong {
     font-family: var(--serif);
-    font-size: 1.7rem;
+    font-size: 1.45rem;
     font-weight: 400;
 }
 
@@ -159,7 +184,9 @@ button { cursor: pointer; }
 
 .text-btn { border: 0; padding-inline: 0.2rem; color: var(--verbish-teal); }
 
-.view { padding: 2.5rem 0 4rem; }
+.view { padding: 1.1rem 0 3rem; }
+
+#view-oracle { padding-top: 0.85rem; }
 
 .kicker {
     margin: 0 0 0.75rem;
@@ -176,7 +203,7 @@ h1, h2, h3, .verb {
     line-height: 1.15;
 }
 
-h1 { font-size: clamp(2.15rem, 5vw, 4.2rem); margin: 0 0 1rem; max-width: 16ch; }
+h1 { font-size: clamp(1.7rem, 3vw, 2.3rem); margin: 0 0 0.45rem; max-width: 18ch; }
 
 h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); margin: 0 0 0.75rem; }
 
@@ -186,7 +213,25 @@ h3 { font-size: 1.45rem; margin: 0 0 0.4rem; }
 
 .lede { font-size: 1.15rem; margin-top: 0; }
 
-.selector { margin: 2rem 0 1.5rem; }
+.selector { margin: 0 0 0.75rem; }
+
+.selector-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
+    align-items: flex-end;
+}
+
+.hint {
+    margin: 0 0 0.8rem;
+    color: var(--muted);
+}
+
+.selector-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
 
 .selector-label, .meta, .fine {
     color: var(--muted);
@@ -196,19 +241,20 @@ h3 { font-size: 1.45rem; margin: 0 0 0.4rem; }
     text-transform: uppercase;
 }
 
-.choice-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.45rem 0 0.9rem; }
+.choice-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.25rem 0 0.35rem; }
 
 .choice {
     border: 1px solid var(--border);
     background: var(--surface);
     border-radius: 999px;
-    padding: 0.4rem 0.75rem;
-    min-width: 2.4rem;
+    padding: 0.28rem 0.65rem;
+    min-width: 2.2rem;
+    font-size: 0.92rem;
 }
 
 .choice[aria-checked="true"], .choice.is-on {
     background: var(--ink);
-    color: white;
+    color: var(--background);
     border-color: var(--ink);
 }
 
@@ -323,7 +369,7 @@ h3 { font-size: 1.45rem; margin: 0 0 0.4rem; }
 }
 
 .note, .callout, pre {
-    background: #f6f1e8;
+    background: color-mix(in srgb, var(--ink) 6%, var(--surface));
     border-radius: 12px;
     padding: 0.9rem 1rem;
     margin: 0.8rem 0;
@@ -339,7 +385,8 @@ h3 { font-size: 1.45rem; margin: 0 0 0.4rem; }
 textarea, input[type="search"], select {
     width: 100%;
     border: 1px solid var(--border);
-    background: white;
+    background: var(--surface);
+    color: var(--ink);
     border-radius: 10px;
     padding: 0.7rem 0.8rem;
 }
@@ -458,7 +505,7 @@ dialog::backdrop { background: rgba(25, 25, 25, 0.45); }
     .oracle-layout, .filters { grid-template-columns: 1fr; }
     .gallery { grid-template-columns: 1fr 1fr; }
     .header-inner { min-height: 3.6rem; }
-    h1 { font-size: clamp(2.1rem, 10vw, 2.7rem); }
+    h1 { font-size: 1.65rem; max-width: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -24,7 +24,7 @@ node scripts/validate.js
 
 The script confirms the 52-card Code:RED roster, refuses unlicensed image display, and reports social profiles the official gallery did not link.
 
-Card artwork identified on the RunIt Decks gallery is listed in `data/editions/2026/assets.js` and is not embedded. A public product image is not treated as permission to reproduce it.
+Card artwork and artist profiles that you want to show are entered in `data/editions/2026/manual.js`. Leave `image_url` or `social_url` as `""` until you have a real link. A filled image address is displayed on that card. A filled social address becomes the artist link. The six profiles still blank are Arvy Trinidad, Gemart Ortega, Wham, Alldefs, Mimaaaaaaaaw, and JJ Zamoranos.
 
 ## Stack
 

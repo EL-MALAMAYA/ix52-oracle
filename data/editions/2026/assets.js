@@ -6,7 +6,7 @@ var IMAGE_POLICY_2026 = {
     display_permitted: false,
     rights_status: "unconfirmed",
     reason: "Each standard card face, the two jokers, the box, and the card back are published as separate files on the official RunIt Decks gallery. IX:52 has not confirmed a license to reproduce, crop, cache, or export those files, so the interface does not embed them.",
-    source_page: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards"
+    source_page: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards"
 };
 
 var IMAGE_CDN_2026 = "https://runitdecks.com/cdn/shop/files/";

@@ -138,7 +138,7 @@ var ORACLE_2026 = [
         word_of_the_day: "belonging",
         word_meaning: "The feeling of having a place among others.",
         learning_note: "RunIt Decks presents Code:RED as a collaboration among 55 artists. IX:52’s verb is a practice prompt, not a caption written by the artist.",
-        learning_source: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+        learning_source: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
         learning_source_name: "RunIt Decks",
         capacity_note: "Belonging to yourself for five quiet minutes is a valid form of this verb."
     },
@@ -318,7 +318,7 @@ var ORACLE_2026 = [
         word_of_the_day: "assembly",
         word_meaning: "The act of fitting parts together.",
         learning_note: "A collective deck is an assembly of distinct authors. Naming each one keeps the whole honest.",
-        learning_source: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+        learning_source: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
         learning_source_name: "RunIt Decks",
         capacity_note: "Gathering the pieces is a finished movement if that is the energy you have."
     },
@@ -458,7 +458,7 @@ var ORACLE_2026 = [
         word_of_the_day: "documentation",
         word_meaning: "A record made so something can be recalled accurately.",
         learning_note: "This deck’s public record names 55 contributing artists. A good note keeps the maker and the later reading distinct.",
-        learning_source: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+        learning_source: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
         learning_source_name: "RunIt Decks",
         capacity_note: "One sentence is a document. You are not required to write the whole day."
     },
@@ -498,7 +498,7 @@ var ORACLE_2026 = [
         word_of_the_day: "cultivation",
         word_meaning: "The patient work of helping something develop.",
         learning_note: "RunIt Decks identifies Queen of Blood Diamonds as a Code:RED-exclusive artwork. The verb Cultivate is an IX:52 practice, not the title’s instruction.",
-        learning_source: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+        learning_source: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
         learning_source_name: "RunIt Decks",
         capacity_note: "Checking the soil is cultivation. You do not have to bloom on schedule."
     },
@@ -578,7 +578,7 @@ var ORACLE_2026 = [
         word_of_the_day: "cooperation",
         word_meaning: "Working with others toward a shared result.",
         learning_note: "RunIt Decks credits dozens of artists rather than folding them into one signature. That is what shared making looks like in public.",
-        learning_source: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+        learning_source: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
         learning_source_name: "RunIt Decks",
         capacity_note: "If you cannot meet anyone today, cooperating with your own limit is the honest partnership."
     },
@@ -718,7 +718,7 @@ var ORACLE_2026 = [
         word_of_the_day: "synthesis",
         word_meaning: "Combining parts into a working whole.",
         learning_note: "A collaborative artwork holds many styles in one object. Integration does not require them to become the same style.",
-        learning_source: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+        learning_source: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
         learning_source_name: "RunIt Decks",
         capacity_note: "You can note the seam today and sew it when you have thread."
     },
@@ -998,7 +998,7 @@ var ORACLE_2026 = [
         word_of_the_day: "investigation",
         word_meaning: "A careful search for facts about a question.",
         learning_note: "RunIt Decks names The Sour Knight as a Code:RED-exclusive face card. Confirming the edition is part of honest credit.",
-        learning_source: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+        learning_source: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
         learning_source_name: "RunIt Decks",
         capacity_note: "Marking something unverified is a successful investigation. Guessing is not."
     },

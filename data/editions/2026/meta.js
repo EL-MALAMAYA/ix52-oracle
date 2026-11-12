@@ -10,7 +10,7 @@ var EDITION_2026 = {
     timezone: "Asia/Manila",
     deck_name: "Bicycle Sari-Sari Code:RED",
     producer: "RunIt Decks",
-    deck_url: "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards",
+    deck_url: "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards",
     instagram_url: "https://www.instagram.com/runitdecks/",
     instagram_handle: "@RunItDecks",
     uncut_url: "https://runitdecks.com/products/bicycle-sari-sari-code-red-uncut-sheet",

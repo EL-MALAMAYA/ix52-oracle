@@ -2,7 +2,7 @@
    Social links marked verified were taken from the artist-name anchors on the official
    RunIt Decks product gallery on 2026-11-09. Unlinked artists stay unverified.
    IX:52 oracle text is not a statement by these artists. */
-var ARTIST_SOURCE_PAGE = "https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards";
+var ARTIST_SOURCE_PAGE = "https://runitdecks.com/collections/art-designer-decks/products/bicycle-sari-sari-code-red-playing-cards";
 var ARTIST_CHECKED = "2026-11-09";
 
 function artistRecord(fields) {

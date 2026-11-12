@@ -1,0 +1,57 @@
+card_code,card_label,card_type,suit,rank,artist_name,artist_social_url,card_image_url,is_code_red_exclusive
+hearts_ace,Ace of Hearts,standard,Hearts,Ace,Pollyanna,https://www.instagram.com/polly.anna.ph/,https://runitdecks.com/cdn/shop/files/AOH_3c2b183c-6959-4e01-a5e6-d8ee5b3a0348.png?v=1772360929&width=720,No
+hearts_2,Two of Hearts,standard,Hearts,2,Crazy Vanny,https://www.instagram.com/crazy_vanny/,https://runitdecks.com/cdn/shop/files/2OH_03ef5080-d6dd-4d9f-b532-4be4cce5650d.png?v=1772360929&width=720,No
+hearts_3,Three of Hearts,standard,Hearts,3,Isad Diwa,https://www.instagram.com/isad.diwa/,https://runitdecks.com/cdn/shop/files/3OH_b14c4cb1-e17a-45fa-bf7a-4c12f3f01327.png?v=1772360930&width=720,No
+hearts_4,Four of Hearts,standard,Hearts,4,Dan Fajardo,https://www.instagram.com/danfajardoart/,https://runitdecks.com/cdn/shop/files/4OH_7cf33cad-412d-443b-af0d-ef1d979569f3.png?v=1772360930&width=720,No
+hearts_5,Five of Hearts,standard,Hearts,5,Drin,https://www.instagram.com/im.drin_/,https://runitdecks.com/cdn/shop/files/5OH_2435d61f-17a9-40e5-b0c4-391d689ac416.png?v=1772362368&width=720,No
+hearts_6,Six of Hearts,standard,Hearts,6,Tyang Karyel,https://www.instagram.com/tyangkaryel/,https://runitdecks.com/cdn/shop/files/6OH_d1a6bd52-ccbf-4c61-b604-2a8937cabd17.png?v=1772360929&width=720,No
+hearts_7,Seven of Hearts,standard,Hearts,7,Seeweirdo,https://www.instagram.com/seeweirdo/,https://runitdecks.com/cdn/shop/files/7OH_e35fdd3f-ebd0-490a-b90e-86de60af9afd.png?v=1772360929&width=540,Yes
+hearts_8,Eight of Hearts,standard,Hearts,8,Raki,https://www.instagram.com/raki.official.art/,https://runitdecks.com/cdn/shop/files/8OH_75640ccf-3d51-4b53-ae2d-67de44ecf352.png?v=1772360928&width=540,No
+hearts_9,Nine of Hearts,standard,Hearts,9,Mark Weigh,https://www.instagram.com/markweigh/,https://runitdecks.com/cdn/shop/files/9OH_b87af9b2-cf0d-4d80-b3e7-9b0ed1253c41.png?v=1772360930&width=540,No
+hearts_10,Ten of Hearts,standard,Hearts,10,Kookoo,https://www.instagram.com/kookoo.ramos/,https://runitdecks.com/cdn/shop/files/10OH.png?v=1772360930&width=540,No
+hearts_jack,Jack of Hearts,standard,Hearts,Jack,Bitto,https://www.instagram.com/studio_bitto/,https://runitdecks.com/cdn/shop/files/JOH_e04bd6a8-700d-47e6-9038-d75f47924cf8.png?v=1772360928&width=540,No
+hearts_queen,Queen of Hearts,standard,Hearts,Queen,Jill Arteche,https://www.instagram.com/jillarteche/,https://runitdecks.com/cdn/shop/files/QOH_61a1d808-51ad-4514-8af6-6bae6d3cdb73.png?v=1772360929&width=540,No
+hearts_king,King of Hearts,standard,Hearts,King,Wetworks,https://www.instagram.com/the.wetworks.studios/,https://runitdecks.com/cdn/shop/files/KOH_be4d5c80-2832-4824-8720-3ab312ebba99.png?v=1772360931&width=540,Yes
+diamonds_ace,Ace of Diamonds,standard,Diamonds,Ace,Kim Borja,https://www.instagram.com/art.kimborja/,https://runitdecks.com/cdn/shop/files/AOD_b1bfe75a-72ee-433c-a765-d722e4ac984d.png?v=1772360930&width=720,No
+diamonds_2,Two of Diamonds,standard,Diamonds,2,Arvy Trinidad,https://www.instagram.com/arvyt/,https://runitdecks.com/cdn/shop/files/2OD_ee3d1fcb-6b5d-4629-aace-18f9e53a1108.png?v=1772360930&width=720,No
+diamonds_3,Three of Diamonds,standard,Diamonds,3,Gemart Ortega,https://www.instagram.com/gemart1715/,https://runitdecks.com/cdn/shop/files/3OD_57b9aa1e-d7c9-4e18-a418-55195a8d5d5a.png?v=1772360930&width=720,No
+diamonds_4,Four of Diamonds,standard,Diamonds,4,Marilou Solano,https://www.instagram.com/mayuenaise/,https://runitdecks.com/cdn/shop/files/4OD_06316e4b-59b0-4382-aa7d-7472d0fbda35.png?v=1772360930&width=720,No
+diamonds_5,Five of Diamonds,standard,Diamonds,5,Gabo Corpuz,https://www.instagram.com/_gab.corpuz/,https://runitdecks.com/cdn/shop/files/5OD_9d2edceb-7eba-44c3-8e22-e6f91c9edf93.png?v=1772360929&width=720,No
+diamonds_6,Six of Diamonds,standard,Diamonds,6,Lean Reboja,https://www.instagram.com/leanreboja/,https://runitdecks.com/cdn/shop/files/6OD_1744cb04-bf18-4576-bc3b-ef8776d574df.png?v=1772360929&width=720,No
+diamonds_7,Seven of Diamonds,standard,Diamonds,7,JP Pining,https://www.instagram.com/jppining/,https://runitdecks.com/cdn/shop/files/7OD_52dadb9e-1a61-414c-86af-55c8e3884a04.png?v=1772360928&width=540,No
+diamonds_8,Eight of Diamonds,standard,Diamonds,8,Blic,https://www.instagram.com/blicpinas/,https://runitdecks.com/cdn/shop/files/8OD_33c1ee58-e3db-459f-ad87-9cbebcbf9d35.png?v=1772360930&width=540,No
+diamonds_9,Nine of Diamonds,standard,Diamonds,9,Wham,https://www.instagram.com/whambenimble/?hl=en,https://runitdecks.com/cdn/shop/files/9OD_e9ead069-4f83-4276-b0c6-4e104215d560.png?v=1772360931&width=540,No
+diamonds_10,Ten of Diamonds,standard,Diamonds,10,Anika Marie Loquite,https://www.instagram.com/anikawithamarie/,https://runitdecks.com/cdn/shop/files/10OD_ceddd2d7-f34e-46da-b66d-bfcfaae8b71a.png?v=1772360931&width=540,No
+diamonds_jack,Jack of Diamonds,standard,Diamonds,Jack,Kapitan,https://www.instagram.com/_kapitan.studio/,https://runitdecks.com/cdn/shop/files/JOD_c09e9420-1270-4c10-99c4-734ac2d8e55f.png?v=1772360929&width=540,No
+diamonds_queen,Queen of Diamonds,standard,Diamonds,Queen,Nicolo Nimor,https://www.instagram.com/nicolonimor/,https://runitdecks.com/cdn/shop/files/QOD_777944ae-e025-4808-b7d7-bee5477e54f6.png?v=1772364135&width=540,Yes
+diamonds_king,King of Diamonds,standard,Diamonds,King,Lei Melendres,https://www.instagram.com/leimelendres/,https://runitdecks.com/cdn/shop/files/KOD_7e0d8953-b1c5-4bbb-a641-2b42e3f611c1.png?v=1772360931&width=540,No
+clubs_ace,Ace of Clubs,standard,Clubs,Ace,Alldefs,https://www.instagram.com/all.defs/,https://runitdecks.com/cdn/shop/files/AOC_1f19cb48-2622-44cd-a902-f5639f61f7b7.png?v=1772360928&width=720,No
+clubs_2,Two of Clubs,standard,Clubs,2,Selah Viee,https://www.instagram.com/selah_viee/,https://runitdecks.com/cdn/shop/files/2OC_dfc13351-ca7e-43df-a5f2-637cb63904ec.png?v=1772360930&width=720,No
+clubs_3,Three of Clubs,standard,Clubs,3,Kempis Ang,https://www.instagram.com/akosikempis/,https://runitdecks.com/cdn/shop/files/3OC_4ba745ec-5f21-43c2-8b1d-d61a1d18177f.png?v=1772360930&width=720,No
+clubs_4,Four of Clubs,standard,Clubs,4,Rups Kiddo,https://www.instagram.com/rupskiddo/,https://runitdecks.com/cdn/shop/files/4OC_f9528580-3174-4088-bdfa-98aa31fac1ba.png?v=1772360930&width=720,No
+clubs_5,Five of Clubs,standard,Clubs,5,Peter Apuyan,https://www.instagram.com/koda___lang/,https://runitdecks.com/cdn/shop/files/5OC_7e8437d7-91f5-40f2-8b8b-b28c518076d8.png?v=1772360930&width=720,No
+clubs_6,Six of Clubs,standard,Clubs,6,Russel Rust,https://www.instagram.com/rust.russel/,https://runitdecks.com/cdn/shop/files/6OC_d1499499-5d78-4376-90be-80ff53d11d37.png?v=1772360929&width=720,No
+clubs_7,Seven of Clubs,standard,Clubs,7,Chase,https://www.instagram.com/chasephl/,https://runitdecks.com/cdn/shop/files/7OC_725f0f01-04cf-4ffc-8282-08d928bc83c5.png?v=1772360927&width=540,No
+clubs_8,Eight of Clubs,standard,Clubs,8,Ivnarts,https://www.instagram.com/ivnarts/,https://runitdecks.com/cdn/shop/files/8OC_dc45d8dd-7de2-402f-8097-bc2460cd413d.png?v=1772360928&width=540,No
+clubs_9,Nine of Clubs,standard,Clubs,9,Mimaaaaaaaaw,https://www.instagram.com/mimaaaaaaaaw/,https://runitdecks.com/cdn/shop/files/9OC_4c1478f8-5534-4ae2-a2dd-1062d8cc9f21.png?v=1772360930&width=540,No
+clubs_10,Ten of Clubs,standard,Clubs,10,Mustache Boii,https://www.instagram.com/mustache.boii/,https://runitdecks.com/cdn/shop/files/10OC_8a9df6c0-e759-4a0e-8d92-d6bd8e110124.png?v=1772360930&width=540,No
+clubs_jack,Jack of Clubs,standard,Clubs,Jack,Jethro Olba,https://www.instagram.com/jethro.olba/,https://runitdecks.com/cdn/shop/files/JOC_8544d706-e937-47e5-830e-6da92f695f2a.png?v=1772360930&width=540,No
+clubs_queen,Queen of Clubs,standard,Clubs,Queen,Mall,https://www.instagram.com/shardula/,https://runitdecks.com/cdn/shop/files/QOC_56df92b5-0eb6-4315-91ee-3cc18eb44ca6.png?v=1772360931&width=540,Yes
+clubs_king,King of Clubs,standard,Clubs,King,Mr. S,https://www.instagram.com/mister_sasquatch/,https://runitdecks.com/cdn/shop/files/KOC_90b75c90-08c0-49eb-be32-e0938ecc5e32.png?v=1772360930&width=540,No
+spades_ace,Ace of Spades,standard,Spades,Ace,JJ Zamoranos,https://www.instagram.com/exldmnl/,https://runitdecks.com/cdn/shop/files/AOS_56ab1317-5fc2-4680-acfb-3341d5967e9c.png?v=1772360930&width=720,No
+spades_2,Two of Spades,standard,Spades,2,Eman Alconera,https://www.instagram.com/eman_alconera/,https://runitdecks.com/cdn/shop/files/2OS_5472dc11-e84c-4a95-a51d-b48557064682.png?v=1772360930&width=720,No
+spades_3,Three of Spades,standard,Spades,3,Jannleen,https://www.instagram.com/jannleen/,https://runitdecks.com/cdn/shop/files/3OS_d0c07261-c5c3-4172-85b2-ce7a8379931e.png?v=1772360929&width=720,No
+spades_4,Four of Spades,standard,Spades,4,John Loyd Benz De Leon,https://www.instagram.com/amongus_the_cat/,https://runitdecks.com/cdn/shop/files/4OS_619fbea6-5f30-41d3-9521-5be8e13e1ae0.png?v=1772360927&width=720,No
+spades_5,Five of Spades,standard,Spades,5,Kino,https://www.instagram.com/hi__kino/,https://runitdecks.com/cdn/shop/files/5OS_3a8c1a90-29bd-4782-8d54-9c7267ad71de.png?v=1772360930&width=720,No
+spades_6,Six of Spades,standard,Spades,6,Curse/Gift,https://www.instagram.com/cursegift/,https://runitdecks.com/cdn/shop/files/6OS_b3fb5a5f-b322-4dbe-93d5-4d19b7991533.png?v=1772360929&width=720,No
+spades_7,Seven of Spades,standard,Spades,7,Jay Francisco,https://www.instagram.com/jayfrancisco11/,https://runitdecks.com/cdn/shop/files/7OS_b3e35d8e-5222-4689-bd34-7e52532790af.png?v=1772360931&width=540,No
+spades_8,Eight of Spades,standard,Spades,8,Garapata,https://www.instagram.com/garapata_/,https://runitdecks.com/cdn/shop/files/8OS_26294cd4-7951-4304-89a9-a1ba325f12e0.png?v=1772360929&width=540,No
+spades_9,Nine of Spades,standard,Spades,9,Cabnov,https://www.instagram.com/cab_nov/,https://runitdecks.com/cdn/shop/files/9OS_10e3f4a6-0ce4-4248-a1c2-71684968854d.png?v=1772360929&width=540,No
+spades_10,Ten of Spades,standard,Spades,10,Barc,https://www.instagram.com/barcthedog/,https://runitdecks.com/cdn/shop/files/10OS_6346edae-1fdf-4b03-9a1e-8a4091576984.png?v=1772360931&width=540,No
+spades_jack,Jack of Spades,standard,Spades,Jack,Jappy Agoncillo,https://www.instagram.com/jappyagoncillo/,https://runitdecks.com/cdn/shop/files/JOS_bd8992fb-15de-4da3-9e19-05d78a114039.png?v=1772360930&width=540,Yes
+spades_queen,Queen of Spades,standard,Spades,Queen,Raisehell,https://www.instagram.com/goraisehell/,https://runitdecks.com/cdn/shop/files/QOS_8b1a69aa-ee0a-4d83-8b5b-9c0f4fcbcdc5.png?v=1772360930&width=540,No
+spades_king,King of Spades,standard,Spades,King,Raco Ruiz,https://www.instagram.com/racobell/,https://runitdecks.com/cdn/shop/files/KOS_32477648-4021-42a4-ac20-90ee5126a8cf.png?v=1772360930&width=540,No
+joker_doktor_karayom,Joker — Doktor Karayom,joker,,,Doktor Karayom,https://www.instagram.com/doktorkarayom/,https://runitdecks.com/cdn/shop/files/J1.png?v=1772360930&width=720,No
+joker_omok,Joker — Omok,joker,,,Omok,https://www.instagram.com/____omok/,https://runitdecks.com/cdn/shop/files/J2.png?v=1772360926&width=720,No
+box,Box Design,packaging,,,Jade Suayan,https://www.instagram.com/syn.too/,https://runitdecks.com/cdn/shop/files/BOX_80fa6ba8-1bc9-471e-aa88-7e17400ba9ea.png?v=1772367434&width=720,Yes
+back,Card Back Design,packaging,,,Jade Suayan,https://www.instagram.com/syn.too/,https://runitdecks.com/cdn/shop/files/CODE-RED-BACK.png?v=1772360929&width=720,Yes

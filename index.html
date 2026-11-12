@@ -23,16 +23,19 @@
     <header class="site-header">
         <div class="wrap header-inner">
             <a class="brand" href="#oracle"><strong>IX:52</strong></a>
-            <button class="ghost nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="siteNav">Menu</button>
             <nav class="nav" id="siteNav" aria-label="Primary">
+                <button class="text-btn nav-close" id="navClose" type="button">Close</button>
                 <a href="#oracle">Oracle</a>
-                <a href="#artists">Artists</a>
-                <a href="#practice">The Practice</a>
+                <a href="#artists">Gallery</a>
+                <a href="#practice">Practice</a>
                 <a href="#about">About</a>
             </nav>
-            <div class="theme-switch" role="group" aria-label="Color mode">
-                <button type="button" id="themeLight" data-theme-choice="light" aria-pressed="true">Light</button>
-                <button type="button" id="themeDark" data-theme-choice="dark" aria-pressed="false">Dark</button>
+            <div class="header-tools">
+                <div class="theme-switch" role="group" aria-label="Color mode">
+                    <button type="button" id="themeLight" data-theme-choice="light" aria-pressed="true">Light</button>
+                    <button type="button" id="themeDark" data-theme-choice="dark" aria-pressed="false">Dark</button>
+                </div>
+                <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Menu"><span class="menu-icon" aria-hidden="true"></span></button>
             </div>
         </div>
     </header>
@@ -53,11 +56,11 @@
                     </div>
                     <div class="selector-actions">
                         <button class="ghost" id="randomBtn" type="button">Explore at random</button>
-                        <button class="text-btn" id="clearBtn" type="button">Clear selection</button>
-                        <p class="selector-note">Match the card you drew. Random is optional.</p>
+                        <button class="text-btn" id="clearBtn" type="button">Clear</button>
+                        <a class="text-btn" href="#practice">Begin your IX:52</a>
                     </div>
                 </div>
-                <p id="welcome" class="hint">Choose a suit and a rank to open the card.</p>
+                <p id="welcome" class="hint">Select the card you drew.</p>
                 <div id="invalid" class="panel" hidden>
                     <h2>That card link does not match the deck.</h2>
                     <p>Use a suit and a rank, for example <code>?card=hearts_7</code>.</p>
@@ -69,19 +72,22 @@
         <section class="view" id="view-artists" hidden>
             <div class="wrap">
                 <p class="kicker">The deck</p>
-                <h1>A Gallery of Fifty-Two</h1>
-                <p class="lede">Fifty-two cards. Fifty-two visual voices. One deck made through collective imagination.</p>
+                <h1>55 artists</h1>
+                <p class="lede">55 artists. 54 playing cards. One collaborative deck.</p>
                 <div class="filters">
                     <input id="gallerySearch" type="search" placeholder="Search artists" aria-label="Search artists">
-                    <select id="gallerySuit" aria-label="Filter by suit">
-                        <option value="">All suits</option>
-                        <option>Hearts</option>
-                        <option>Diamonds</option>
-                        <option>Clubs</option>
-                        <option>Spades</option>
-                    </select>
-                    <select id="galleryRank" aria-label="Filter by rank"></select>
-                    <label class="choice"><input id="galleryExclusive" type="checkbox"> Code:RED exclusive</label>
+                    <button class="ghost" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterMore">Filters</button>
+                    <div id="filterMore" class="filter-more">
+                        <select id="gallerySuit" aria-label="Filter by suit">
+                            <option value="">All suits</option>
+                            <option>Hearts</option>
+                            <option>Diamonds</option>
+                            <option>Clubs</option>
+                            <option>Spades</option>
+                        </select>
+                        <select id="galleryRank" aria-label="Filter by rank"></select>
+                        <label class="check-line"><input id="galleryExclusive" type="checkbox"> Code:RED exclusive</label>
+                    </div>
                 </div>
                 <div class="gallery" id="galleryGrid"></div>
                 <p id="galleryEmpty" hidden>No cards match. Clear a filter or try another name.</p>
@@ -93,7 +99,7 @@
             <div class="wrap">
                 <p class="kicker">Sense, choose, enact, restore, renew</p>
                 <h1>The practice is a return, not a score.</h1>
-                <p class="lede">The 2026 window runs from 17 November 2026 through 7 January 2027, in Asia/Manila. 8 January is an optional epilogue, not a fifty-third card.</p>
+                <p class="lede">Choose the day your 52 days begin. The deck stays open either way.</p>
                 <div id="practiceMount"></div>
             </div>
         </section>
@@ -134,13 +140,12 @@
                 </section>
                 <section>
                     <h2>How to recognize the artists</h2>
-                    <p>Every standard card names its maker. A social link appears only when RunIt Decks’ own gallery links that artist to a profile. If no profile is published there, IX:52 does not invent one. The link back to the deck is a source, not a personal account.</p>
-                    <p>Five artworks are Code:RED exclusives: Heart Hunter, King of Hearts I, Club Queen II, Queen of Blood Diamonds, and The Sour Knight. That label describes the edition, not the artist’s career. Queen of Diamonds in this edition is Nicolo Nimor. Jack of Spades is Jappy Agoncillo.</p>
+                    <p>Every card names its maker and links to the profile supplied for that artwork. The Code:RED cards were designed by those artists. RunIt Decks produced the deck. Maiba Studio wrote the IX:52 interpretation and this site. IX:52 is an independent practice.</p>
+                    <p>Five standard-card artworks are Code:RED exclusives: Seven of Hearts, King of Hearts, Queen of Diamonds, Queen of Clubs, and Jack of Spades. Queen of Diamonds is Nicolo Nimor. Jack of Spades is Jappy Agoncillo.</p>
                 </section>
                 <section>
-                    <h2>Neurodivergence and changing capacity</h2>
-                    <p>People differ in attention, sensory load, executive function, emotion, and available energy. The interface keeps choices few, journaling optional, and motion quiet. A smaller action is a complete practice. Rest is never locked behind a task.</p>
-                    <p>If you live with bipolar disorder, keep the care plan you already have with a clinician. This site does not diagnose episodes, read productivity as mania, suggest medication changes, or treat a sleepless expansion as a breakthrough. If warning signs appear, contact the support you have already agreed on. Sleep and stable routines stay protected. Card colors and draws have no clinical meaning.</p>
+                    <h2>Capacity</h2>
+                    <p>Expansive, ordinary, constrained, and recovery describe the room you have today. A smaller action still counts. You can stop and come back.</p>
                 </section>
                 <section>
                     <h2>What it means to return</h2>
@@ -153,9 +158,7 @@
                 <section>
                     <h2>Credits and sources</h2>
                     <p>IX:52 is published by Maiba Studio. The 2025 readings remain available in the <a href="archive.html">2025 archive</a>.</p>
-                    <p>Playing-card artworks are by their respective artists. Bicycle Sari-Sari Code:RED is produced by <a href="https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards" target="_blank" rel="noopener noreferrer">RunIt Decks</a>. IX:52 is not endorsed by the artists, Bicycle, or RunIt Decks.</p>
-                    <p>A card picture appears when a direct image link is entered for that card. Artist profiles that were not confirmed stay blank until a link is added.</p>
-                    <p>Notes you write stay in this browser unless you export them. They are not added to Share the Day.</p>
+                    <p>Notes stay in this browser unless you export them. Share the Day uses only the reflection you type into that box.</p>
                 </section>
             </div>
         </section>
@@ -163,9 +166,8 @@
 
     <footer class="site-footer">
         <div class="wrap">
-            <p>© <span id="footerYear"></span> Maiba Studio. IX:52 — The Hermit Returns.</p>
-            <p>Playing-card artworks by their respective artists. <a href="https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards" target="_blank" rel="noopener noreferrer">Bicycle Sari-Sari Code:RED</a> produced by RunIt Decks.</p>
-            <p>IX:52 is an independent practice and is not endorsed by the artists, Bicycle, or RunIt Decks.</p>
+            <p>© <span id="footerYear"></span> Maiba Studio · IX:52 — The Hermit Returns</p>
+            <p><a href="#artists">Artwork: Code:RED artists</a> · <a href="https://runitdecks.com/products/bicycle-sari-sari-code-red-playing-cards" target="_blank" rel="noopener noreferrer">Deck: RunIt Decks</a></p>
         </div>
     </footer>
 
@@ -176,16 +178,14 @@
     <div id="toast" class="toast" hidden role="status">Copied</div>
 
     <script src="data/editions/2026/meta.js"></script>
+    <script src="data/editions/2026/cycle.js"></script>
     <script src="data/editions/2026/artists.js"></script>
     <script src="data/editions/2026/assets.js"></script>
     <script src="data/editions/2026/oracle.js"></script>
-    <script src="data/editions/2026/manual.js"></script>
+    <script src="data/editions/2026/deck.js"></script>
     <script src="app.js"></script>
     <script>
-        document.getElementById("footerYear").textContent = new Intl.DateTimeFormat("en-US", {
-            timeZone: "Asia/Manila",
-            year: "numeric"
-        }).format(new Date());
+        document.getElementById("footerYear").textContent = String(new Date().getFullYear());
     </script>
     <noscript>
         <p class="wrap">IX:52 needs JavaScript to select cards. The reading texts are in this page’s scripts and are not sent to an account.</p>

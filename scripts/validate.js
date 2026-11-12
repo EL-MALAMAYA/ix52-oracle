@@ -136,7 +136,7 @@ Object.keys(expected).forEach(function (code) {
     if (artist.artist_name.indexOf("Mustache Bpo") !== -1) fail("Typo Mustache Bpo used as display name");
     if (!artist.social_verification_status) fail(code + " missing social status");
     if (artist.social_verification_status === "verified") {
-        if (!/^https:\/\/www\.instagram\.com\/[A-Za-z0-9_.]+\/$/.test(artist.social_url || "")) {
+        if (!/^https:\/\/www\.instagram\.com\/[A-Za-z0-9_.]+\/?(?:\?.*)?$/.test(artist.social_url || "")) {
             fail(code + " verified social URL is not a profile link");
         }
     } else if (artist.social_verification_status === "unverified") {
@@ -209,6 +209,47 @@ if (exclusives.join() !== expectedExclusives.join()) fail("Exclusive set mismatc
     if (file === "index.html" && /©\s*2026/.test(text)) fail("Footer year is hardcoded");
 });
 
+var deckFile = load("data/editions/2026/deck.js", ["DECK_2026"]);
+var cycleFile = load("data/editions/2026/cycle.js", ["addCalendarDays", "practiceDayNumber"]);
+var deck = deckFile.DECK_2026;
+if (deck.length !== 56) fail("Expected 56 deck records, got " + deck.length);
+var standard = deck.filter(function (row) { return row.card_type === "standard"; });
+var jokers = deck.filter(function (row) { return row.card_type === "joker"; });
+var packaging = deck.filter(function (row) { return row.card_type === "packaging"; });
+if (standard.length !== 52) fail("Expected 52 standard records");
+if (jokers.length !== 2) fail("Expected 2 jokers");
+if (packaging.length !== 2) fail("Expected 2 packaging records");
+var names = {};
+deck.forEach(function (row) { names[row.artist_name] = true; });
+if (Object.keys(names).length !== 55) fail("Expected 55 unique artists, got " + Object.keys(names).length);
+var codes = {};
+deck.forEach(function (row) {
+    if (codes[row.card_code]) fail("Duplicate deck card_code " + row.card_code);
+    codes[row.card_code] = true;
+    if (!row.artist_social_url) fail(row.card_code + " missing social URL");
+    if (!row.card_image_url || row.card_image_url.indexOf("https://") !== 0) fail(row.card_code + " missing image URL");
+    if (row.card_image_url.indexOf("width=") === -1) fail(row.card_code + " dropped image query");
+});
+["hearts", "diamonds", "clubs", "spades"].forEach(function (suit) {
+    var count = standard.filter(function (row) { return row.card_code.indexOf(suit + "_") === 0; }).length;
+    if (count !== 13) fail(suit + " has " + count + " cards");
+});
+var deckExclusives = standard.filter(function (row) { return row.is_code_red_exclusive; }).map(function (row) { return row.card_code; }).sort();
+if (deckExclusives.join() !== expectedExclusives.join()) fail("Deck exclusive mismatch: " + deckExclusives.join(", "));
+var jade = deck.filter(function (row) { return row.artist_name === "Jade Suayan"; });
+if (jade.length !== 2) fail("Jade Suayan should have 2 artworks");
+if (cycleFile.addCalendarDays("2026-12-01", 51) !== "2027-01-21") fail("Day 52 from 1 Dec 2026");
+if (cycleFile.addCalendarDays("2026-12-01", 52) !== "2027-01-22") fail("Epilogue from 1 Dec 2026");
+if (cycleFile.addCalendarDays("2024-02-28", 1) !== "2024-02-29") fail("Leap day");
+if (cycleFile.addCalendarDays("2023-02-28", 1) !== "2023-03-01") fail("Non-leap February");
+if (cycleFile.practiceDayNumber("2026-12-01", "2027-01-21") !== 52) fail("Day number across years");
+if (cycleFile.practiceDayNumber("2026-11-17", "2026-11-16") !== null) fail("Day before start should be empty");
+["index.html", "app.js"].forEach(function (file) {
+    var body = fs.readFileSync(path.join(root, file), "utf8");
+    if (/bipolar/i.test(body)) fail(file + " still contains a bipolar note");
+    if (body.indexOf("outside the 52-day window") !== -1) fail(file + " still locks the practice window");
+});
+
 var archived = fs.readFileSync(path.join(root, "data/editions/2025/oracle.js"));
 var original = fs.readFileSync(path.join(root, "data.js"));
 if (!archived.equals(original)) fail("2025 archive does not match data.js");
@@ -218,7 +259,10 @@ console.log("Cards: " + oracle.length);
 console.log("Standard artists: " + artists.filter(function (artist) { return artist.card_code; }).length);
 console.log("Verified social links: " + artists.filter(function (artist) { return artist.social_verification_status === "verified"; }).length);
 console.log("Unverified social links: " + artists.filter(function (artist) { return artist.social_verification_status === "unverified"; }).length);
-console.log("Image display permitted: " + assets.filter(function (asset) { return asset.display_permitted; }).length);
+console.log("Deck records: " + deck.length);
+console.log("Unique artists: " + Object.keys(names).length);
+console.log("Deck images: " + deck.filter(function (row) { return row.card_image_url; }).length);
+console.log("Deck social links: " + deck.filter(function (row) { return row.artist_social_url; }).length);
 console.log("Unresolved items: " + unresolved.length);
 unresolved.forEach(function (item) { console.log(" - " + item); });
 

@@ -20,12 +20,37 @@ var store = loadStore();
 function loadStore() {
     try {
         var parsed = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
-        parsed.draws = parsed.draws || {};
         parsed.notes = parsed.notes || {};
+        parsed.cycles = parsed.cycles || {};
+        if (!parsed.version && parsed.draws && Object.keys(parsed.draws).length) {
+            var legacyId = "legacy-2026-11-17";
+            parsed.cycles[legacyId] = {
+                id: legacyId,
+                start: "2026-11-17",
+                created: "2026-11-17",
+                draws: parsed.draws,
+                notes: parsed.notes
+            };
+            parsed.activeCycleId = legacyId;
+        }
+        parsed.version = 2;
+        delete parsed.draws;
         return parsed;
     } catch (error) {
-        return { draws: {}, notes: {} };
+        return { version: 2, notes: {}, cycles: {} };
     }
+}
+
+function activeCycle() {
+    if (!store.activeCycleId) return null;
+    return store.cycles[store.activeCycleId] || null;
+}
+
+function localToday() {
+    var date = new Date();
+    var month = String(date.getMonth() + 1).padStart(2, "0");
+    var day = String(date.getDate()).padStart(2, "0");
+    return date.getFullYear() + "-" + month + "-" + day;
 }
 
 function saveStore() {
@@ -36,27 +61,14 @@ function saveStore() {
     }
 }
 
-function manilaToday() {
-    return new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Manila",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-    }).format(new Date());
-}
-
 function addDays(iso, amount) {
-    var parts = iso.split("-").map(Number);
-    var date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + amount));
-    return date.toISOString().slice(0, 10);
+    return addCalendarDays(iso, amount);
 }
 
 function dayNumber(iso) {
-    var start = Date.parse(EDITION_2026.window_start + "T00:00:00Z");
-    var current = Date.parse(iso + "T00:00:00Z");
-    var diff = Math.round((current - start) / 86400000) + 1;
-    if (diff < 1 || diff > 52) return null;
-    return diff;
+    var cycle = activeCycle();
+    if (!cycle) return null;
+    return practiceDayNumber(cycle.start, iso);
 }
 
 function formatDate(iso) {
@@ -125,40 +137,54 @@ function getCard(code) {
 }
 
 function canShowImage(asset) {
-    return Boolean(asset && asset.display_permitted === true && asset.image_url);
+    return Boolean(asset && asset.image_url);
 }
 
-function applyManualLinks() {
-    if (typeof MANUAL_LINKS_2026 === "undefined") return;
-    MANUAL_LINKS_2026.forEach(function (row) {
-        var social = (row.social_url || "").trim();
-        var image = (row.image_url || "").trim();
-        if (row.card_code && artistByCard[row.card_code]) {
-            var artist = artistByCard[row.card_code];
-            if (social) {
-                artist.social_url = social;
-                artist.social_platform = "instagram";
-                artist.social_verification_status = "verified";
-            } else {
-                artist.social_url = null;
-                artist.social_platform = null;
-                artist.social_verification_status = "unverified";
-            }
-        } else if (row.artist_id && artistById[row.artist_id] && social) {
-            artistById[row.artist_id].social_url = social;
-            artistById[row.artist_id].social_platform = "instagram";
-            artistById[row.artist_id].social_verification_status = "verified";
+function applyDeck() {
+    if (typeof DECK_2026 === "undefined") return;
+    var byAsset = {};
+    ASSETS_2026.forEach(function (asset) { byAsset[asset.asset_id] = asset; });
+    DECK_2026.forEach(function (row) {
+        var artist = artistByCard[row.card_code];
+        if (!artist) {
+            artist = ARTISTS_2026.filter(function (item) {
+                return item.artist_name === row.artist_name;
+            })[0];
         }
-        var asset = row.card_code ? assetByCard[row.card_code] : null;
-        if (!asset && row.asset_id) {
-            asset = ASSETS_2026.filter(function (item) { return item.asset_id === row.asset_id; })[0];
+        if (artist) {
+            artist.artist_name = row.artist_name;
+            artist.social_url = row.artist_social_url;
+            artist.social_platform = "instagram";
+            artist.social_verification_status = "verified";
         }
-        if (asset && image) {
-            asset.image_url = image;
+        var asset = assetByCard[row.card_code] || byAsset[row.card_code];
+        if (asset) {
+            asset.image_url = row.card_image_url;
             asset.display_permitted = true;
-            asset.image_rights_status = "manual";
+            asset.image_rights_status = "supplied";
+            asset.image_alt = row.card_label + ", artwork by " + row.artist_name;
+            asset.is_code_red_exclusive = row.is_code_red_exclusive;
         }
+        if (oracleByCode[row.card_code]) oracleByCode[row.card_code].is_code_red_exclusive = row.is_code_red_exclusive;
     });
+}
+
+function handleFrom(url) {
+    try {
+        var path = new URL(url).pathname.replace(/\/+$/, "");
+        var handle = path.split("/").filter(Boolean).pop();
+        return handle ? "@" + handle : "";
+    } catch (error) {
+        return "";
+    }
+}
+
+function socialAnchor(url) {
+    var link = el("a", "social-link", "Instagram ↗");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    return link;
 }
 
 function el(tag, className, text) {
@@ -226,6 +252,7 @@ function showView(name) {
     var nav = document.getElementById("siteNav");
     nav.classList.remove("is-open");
     document.getElementById("navToggle").setAttribute("aria-expanded", "false");
+    if (name === "oracle" && state.cardCode) renderOracle();
     if (name === "artists") renderGallery();
     if (name === "practice") renderPractice();
 }
@@ -245,7 +272,10 @@ function setCard(code, options) {
     state.rank = card.rank;
     state.step = "sense";
     state.closedReading = false;
-    state.sessionNote = store.saveLocal && store.notes[code] ? store.notes[code] : "";
+    var cycle = activeCycle();
+    state.sessionNote = "";
+    if (cycle && cycle.notes && cycle.notes[code]) state.sessionNote = cycle.notes[code];
+    else if (store.notes && store.notes[code]) state.sessionNote = store.notes[code];
     syncChoiceButtons();
     var url = new URL(location.href);
     url.searchParams.set("card", code);
@@ -253,9 +283,9 @@ function setCard(code, options) {
     history.replaceState(null, "", url);
     renderOracle();
     announce(card.label + ". Artwork by " + card.artist.artist_name + ". Verb " + card.oracle.daily_verb + ".");
-    if (options.focus) {
-        var title = document.getElementById("cardTitle");
-        if (title) title.focus();
+    if (options.reveal) {
+        var art = document.querySelector(".plate-button");
+        if (art) art.scrollIntoView({ block: "nearest" });
     }
 }
 
@@ -282,12 +312,12 @@ function syncChoiceButtons() {
     });
 }
 
-function trySelection(focus) {
+function trySelection() {
     if (!state.suit || !state.rank) {
         renderOracle();
         return;
     }
-    setCard(codeFor(state.suit, state.rank), { focus: focus });
+    setCard(codeFor(state.suit, state.rank), { reveal: true });
 }
 
 function buildChoices() {
@@ -302,7 +332,7 @@ function buildChoices() {
         button.addEventListener("click", function () {
             state.suit = suit;
             syncChoiceButtons();
-            trySelection(true);
+            trySelection(false);
         });
         suits.appendChild(button);
     });
@@ -316,7 +346,7 @@ function buildChoices() {
         button.addEventListener("click", function () {
             state.rank = rank;
             syncChoiceButtons();
-            trySelection(true);
+            trySelection(false);
         });
         ranks.appendChild(button);
     });
@@ -348,43 +378,30 @@ function arrowGroup(group) {
 }
 
 function plateNode(card, interactive) {
-    var asset = card.asset;
-    if (canShowImage(asset)) {
-        var image = document.createElement("img");
-        image.className = "art-image";
-        image.src = asset.image_url;
-        image.alt = asset.image_alt;
-        image.width = asset.image_width;
-        image.height = asset.image_height;
-        if (!interactive) image.loading = "lazy";
-        return image;
+    var frame = el("div", "art-frame");
+    if (!canShowImage(card.asset)) {
+        frame.appendChild(el("p", "withheld", "Image unavailable"));
+        return frame;
     }
-    var plate = el("div", "plate");
-    var top = el("div");
-    top.appendChild(el("div", "plate-rank", RANK_LABELS_2026[card.rank]));
-    top.appendChild(el("p", "plate-suit", card.suit + " " + card.suitMeta.symbol));
-    plate.appendChild(top);
-    var bottom = el("div");
-    bottom.appendChild(el("p", "meta", "Artwork not shown"));
-    bottom.appendChild(el("p", "withheld", "The illustration by " + card.artist.artist_name + " is not reproduced on this site."));
-    plate.appendChild(bottom);
-    return plate;
+    var image = document.createElement("img");
+    image.className = "art-image";
+    image.src = card.asset.image_url;
+    image.alt = card.asset.image_alt || (card.label + " by " + card.artist.artist_name);
+    if (interactive) image.setAttribute("fetchpriority", "high");
+    else image.loading = "lazy";
+    image.addEventListener("error", function () {
+        frame.replaceChildren(el("p", "withheld", "Image unavailable"));
+    });
+    frame.appendChild(image);
+    return frame;
 }
 
 function openViewer(card) {
+    state.viewerReturn = document.activeElement;
     var body = document.getElementById("viewerBody");
     body.replaceChildren();
     body.appendChild(plateNode(card, true));
-    var caption = el("p", "", card.label + ". Artwork by " + card.artist.artist_name + ".");
-    body.appendChild(caption);
-    if (!canShowImage(card.asset)) {
-        body.appendChild(el("p", "fine", "Enlarging this frame does not reveal the artwork. See the official deck page to view the published gallery."));
-    }
-    var link = el("a", "", "Official deck page");
-    link.href = EDITION_2026.deck_url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    body.appendChild(link);
+    body.appendChild(el("p", "", card.label + ". Artwork by " + card.artist.artist_name + "."));
     var dialog = document.getElementById("viewer");
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.hidden = false;
@@ -410,37 +427,32 @@ function actionPair(card) {
 }
 
 function shareCaption(card) {
-    var today = manilaToday();
-    var draw = store.draws[today];
+    var today = localToday();
+    var number = dayNumber(today);
     var lines = [];
-    if (draw && draw.card_code === card.code && dayNumber(today)) {
-        var number = String(dayNumber(today)).padStart(2, "0");
-        lines.push("IX:52 / Day " + number);
-    } else {
-        lines.push("IX:52");
-    }
-    lines.push(card.label + " — " + card.oracle.daily_verb.toUpperCase());
+    lines.push(number ? "IX:52 — Day " + number : "IX:52");
+    lines.push(card.label + " · " + card.oracle.daily_verb.toUpperCase());
     lines.push("");
     lines.push("Artwork by " + card.artist.artist_name);
-    if (card.artist.social_verification_status === "verified" && card.artist.social_url) {
-        lines.push(card.artist.social_url);
-    } else {
-        lines.push("Social profile not confirmed.");
-        lines.push("Deck source: " + EDITION_2026.deck_url);
-    }
-    lines.push("From Bicycle Sari-Sari Code:RED by RunIt Decks");
+    var handle = handleFrom(card.artist.social_url || "");
+    if (handle) lines.push(handle);
     lines.push("");
-    lines.push("Today's reflection: [your own words]");
+    lines.push("Today's reflection: " + (state.shareReflection && state.shareReflection.trim() ? state.shareReflection.trim() : "[personal text]"));
+    lines.push("");
+    lines.push("Bicycle Sari-Sari Code:RED by RunIt Decks");
     lines.push("");
     lines.push("#IX52 #Verbesque #CodeRED");
-    lines.push("");
-    lines.push("IX:52 interpretation by Maiba Studio. The credited artist made the card artwork, not this reading.");
     return lines.join("\n");
 }
 
+function cycleDraws() {
+    var cycle = activeCycle();
+    return cycle && cycle.draws ? cycle.draws : {};
+}
+
 function otherDays(code, exceptDate) {
-    return Object.keys(store.draws).filter(function (date) {
-        return store.draws[date].card_code === code && date !== exceptDate;
+    return Object.keys(cycleDraws()).filter(function (date) {
+        return cycleDraws()[date].card_code === code && date !== exceptDate;
     });
 }
 
@@ -458,50 +470,30 @@ function renderOracle() {
     invalid.hidden = true;
     var card = getCard(state.cardCode);
     var layout = el("div", "oracle-layout");
-    var left = el("div");
+    var title = el("h2", "card-title", card.label);
+    title.id = "cardTitle";
+    layout.appendChild(title);
+    var left = el("div", "art-col");
     var opener = el("button", "plate-button");
     opener.type = "button";
     opener.appendChild(plateNode(card, true));
-    opener.setAttribute("aria-label", "Enlarge the card frame for " + card.label);
+    opener.setAttribute("aria-label", "Enlarge the artwork for " + card.label);
     opener.addEventListener("click", function () { openViewer(card); });
     left.appendChild(opener);
-    var credit = el("div", "credit");
-    var name = el("h2", "", card.label);
-    name.id = "cardTitle";
-    name.tabIndex = -1;
-    credit.appendChild(name);
-    credit.appendChild(el("p", "meta", "Artwork by"));
-    credit.appendChild(el("p", "artist-name", card.artist.artist_name));
-    if (card.artist.social_verification_status === "verified" && card.artist.social_url) {
-        var social = el("a", "", "Instagram");
-        social.href = card.artist.social_url;
-        social.target = "_blank";
-        social.rel = "noopener noreferrer";
-        credit.appendChild(social);
-    } else {
-        credit.appendChild(el("p", "", "Social profile not confirmed."));
-        var source = el("a", "", "Official deck page");
-        source.href = card.artist.artist_page_url;
-        source.target = "_blank";
-        source.rel = "noopener noreferrer";
-        credit.appendChild(source);
-    }
-    credit.appendChild(el("p", "fine", "Part of Bicycle Sari-Sari Code:RED by RunIt Decks"));
-    if (card.oracle.is_code_red_exclusive) {
-        var badge = el("p", "exclusive", "Code:RED exclusive");
-        credit.appendChild(badge);
-        if (card.oracle.exclusive_title) {
-            credit.appendChild(el("p", "", "Edition title: " + card.oracle.exclusive_title));
-        }
-    }
-    if (card.artist.name_note) credit.appendChild(el("p", "fine", card.artist.name_note));
-    left.appendChild(credit);
     layout.appendChild(left);
 
-    var right = el("div");
-    right.appendChild(el("p", "meta", card.suitMeta.element + " · " + card.suitMeta.domain));
+    var right = el("div", "read-col");
+    var credit = el("div", "credit");
+    credit.appendChild(el("p", "meta", "Artwork by"));
+    credit.appendChild(el("p", "artist-name", card.artist.artist_name));
+    if (card.artist.social_url) credit.appendChild(socialAnchor(card.artist.social_url));
+    if (card.oracle.is_code_red_exclusive) {
+        credit.appendChild(el("p", "exclusive", "Code:RED Exclusive"));
+        if (card.oracle.exclusive_title) credit.appendChild(el("p", "fine", card.oracle.exclusive_title));
+    }
+    right.appendChild(credit);
     right.appendChild(el("p", "verb", card.oracle.daily_verb));
-    right.appendChild(el("p", "", card.archetype));
+    right.appendChild(el("p", "archetype", card.archetype));
 
     var steps = el("div", "steps");
     steps.setAttribute("role", "tablist");
@@ -512,10 +504,10 @@ function renderOracle() {
         button.setAttribute("role", "tab");
         button.setAttribute("aria-selected", state.step === step.id ? "true" : "false");
         button.addEventListener("click", function () {
+            var y = window.scrollY;
             state.step = step.id;
             renderOracle();
-            var selected = document.querySelector('.step[aria-selected="true"]');
-            if (selected) selected.focus();
+            window.scrollTo(0, y);
         });
         steps.appendChild(button);
     });
@@ -541,14 +533,32 @@ function renderOracle() {
 
     var share = el("div", "panel");
     share.appendChild(el("h3", "", "Share the Day"));
-    share.appendChild(el("p", "", "A caption you can copy. Your private note is not included. No image is exported, because the artwork’s reproduction rights are unconfirmed."));
+    var reflection = document.createElement("textarea");
+    reflection.value = state.shareReflection || "";
+    reflection.setAttribute("aria-label", "Reflection for the caption");
+    reflection.placeholder = "Optional reflection for the caption";
+    reflection.addEventListener("input", function () {
+        state.shareReflection = reflection.value;
+        preview.textContent = shareCaption(card);
+    });
+    share.appendChild(reflection);
     var preview = el("pre", "note");
     preview.textContent = shareCaption(card);
     share.appendChild(preview);
+    var shareActions = el("div", "actions");
     var copyShare = el("button", "solid", "Copy caption");
     copyShare.type = "button";
     copyShare.addEventListener("click", function () { copyText(shareCaption(card)); });
-    share.appendChild(copyShare);
+    shareActions.appendChild(copyShare);
+    if (navigator.share) {
+        var nativeShare = el("button", "ghost", "Share");
+        nativeShare.type = "button";
+        nativeShare.addEventListener("click", function () {
+            navigator.share({ text: shareCaption(card) }).catch(function () {});
+        });
+        shareActions.appendChild(nativeShare);
+    }
+    share.appendChild(shareActions);
     right.appendChild(share);
 
     var record = recordPanel(card);
@@ -562,16 +572,12 @@ function stepBody(card, step) {
     var oracle = card.oracle;
     if (step === "sense") {
         wrap.appendChild(el("p", "", oracle.artist_observation_prompt));
-        wrap.appendChild(el("p", "", card.suitMeta.element + " is this suit’s traditional element. It is a prompt for attention, not a claim about the picture."));
     }
     if (step === "choose") {
         wrap.appendChild(el("p", "", oracle.intention_cue));
-        wrap.appendChild(el("p", "fine", "The verb is an IX:52 interpretation. It is not a message from " + card.artist.artist_name + "."));
     }
     if (step === "enact") {
-        if (state.capacity === "recovery") {
-            wrap.appendChild(el("p", "callout", "Rest may be the action. You do not have to perform the suggestion below."));
-        }
+        if (state.capacity === "recovery") wrap.appendChild(el("p", "callout", "Rest may be the action."));
         wrap.appendChild(el("p", "", oracle.oracle_text));
         wrap.appendChild(el("h3", "", "Intention"));
         wrap.appendChild(el("p", "", oracle.incantation));
@@ -580,7 +586,6 @@ function stepBody(card, step) {
         wrap.appendChild(el("p", "", pair.primary));
         wrap.appendChild(el("h3", "", pair.secondaryLabel));
         wrap.appendChild(el("p", "", pair.secondary));
-        wrap.appendChild(el("p", "fine", "Neither action ranks your worth. You can skip both."));
         var actions = el("div", "actions");
         actions.appendChild(copyButton("Copy intention", oracle.incantation));
         actions.appendChild(copyButton("Copy action", pair.primary));
@@ -590,58 +595,40 @@ function stepBody(card, step) {
         wrap.appendChild(el("p", "", oracle.restoration_cue));
         wrap.appendChild(el("p", "", oracle.capacity_note));
         wrap.appendChild(capacityControl());
-        var details = el("details");
-        var summary = el("summary", "", "Optional bipolar-aware note");
-        details.appendChild(summary);
-        details.appendChild(el("p", "", "This is not a diagnosis or a treatment plan. If you live with bipolar disorder, follow the care plan you already made with a clinician. Do not treat extra output, a color, or a card as evidence of an episode. Protect sleep. If warning signs show up, contact the person or clinician you already trust."));
-        wrap.appendChild(details);
     }
     if (step === "renew") {
         wrap.appendChild(el("p", "", oracle.journal_prompt));
-        wrap.appendChild(el("p", "", "What happened? What did I learn? What should I protect or change next?"));
         var field = document.createElement("textarea");
         field.value = state.sessionNote;
         field.setAttribute("aria-label", "Private note");
-        field.placeholder = "Optional. This note is private.";
+        field.placeholder = "Optional note. It stays on this device.";
         field.addEventListener("input", function () {
             state.sessionNote = field.value;
-            if (store.saveLocal) {
-                store.notes[card.code] = field.value;
-                saveStore();
+            store.notes[card.code] = field.value;
+            var cycle = activeCycle();
+            if (cycle) {
+                cycle.notes = cycle.notes || {};
+                cycle.notes[card.code] = field.value;
             }
-        });
-        wrap.appendChild(field);
-        var saveLabel = el("label", "");
-        var saveBox = document.createElement("input");
-        saveBox.type = "checkbox";
-        saveBox.checked = Boolean(store.saveLocal);
-        saveBox.addEventListener("change", function () {
-            store.saveLocal = saveBox.checked;
-            state.saveLocal = saveBox.checked;
-            if (saveBox.checked) store.notes[card.code] = state.sessionNote;
             saveStore();
         });
-        saveLabel.appendChild(saveBox);
-        saveLabel.appendChild(document.createTextNode(" Save this note on this device only"));
-        wrap.appendChild(saveLabel);
-        wrap.appendChild(el("p", "fine", "Notes stay in this browser. They are not added to Share the Day, and they are not sent to Maiba Studio."));
+        wrap.appendChild(field);
         var close = el("button", "solid", "Close today’s practice");
         close.type = "button";
         close.addEventListener("click", function () {
-            var today = manilaToday();
+            var today = localToday();
+            var draws = cycleDraws();
             state.closedReading = true;
-            if (store.draws[today] && store.draws[today].card_code) {
-                store.draws[today].closed = true;
-                if (store.saveLocal && state.sessionNote) store.notes[card.code] = state.sessionNote;
+            if (draws[today] && draws[today].card_code) {
+                draws[today].closed = true;
                 saveStore();
             }
-            toast("Closed when you decided to close it");
+            toast("Closed");
+            var y = window.scrollY;
             renderOracle();
+            window.scrollTo(0, y);
         });
         wrap.appendChild(close);
-        wrap.appendChild(el("p", "", state.closedReading
-            ? "You have closed this reading. You can still open it again."
-            : "Today’s practice is complete when you decide to close it."));
         var word = el("p", "");
         word.appendChild(el("strong", "", oracle.word_of_the_day + ". "));
         word.appendChild(document.createTextNode(oracle.word_meaning));
@@ -675,10 +662,12 @@ function capacityControl() {
         button.setAttribute("role", "radio");
         button.setAttribute("aria-checked", state.capacity === mode.id ? "true" : "false");
         button.addEventListener("click", function () {
+            var y = window.scrollY;
             state.capacity = mode.id;
             store.capacity = mode.id;
             saveStore();
             renderOracle();
+            window.scrollTo(0, y);
             if (currentView() === "practice") renderPractice();
         });
         group.appendChild(button);
@@ -691,45 +680,71 @@ function capacityControl() {
     return wrap;
 }
 
+function startCycle(start) {
+    var id = "c" + Date.now();
+    store.cycles[id] = { id: id, start: start, created: localToday(), draws: {}, notes: {} };
+    store.activeCycleId = id;
+    saveStore();
+}
+
+function recordDraw(card, date) {
+    var cycle = activeCycle();
+    if (!cycle) return;
+    var existing = cycle.draws[date];
+    if (existing && existing.card_code && existing.card_code !== card.code) {
+        if (!window.confirm("Replace the card already recorded for " + formatDate(date) + "?")) return;
+    }
+    cycle.draws[date] = {
+        card_code: card.code,
+        capacity: state.capacity,
+        closed: existing ? Boolean(existing.closed) : false
+    };
+    saveStore();
+    toast("Recorded");
+}
+
 function recordPanel(card) {
     var panel = el("div", "panel");
     panel.appendChild(el("h3", "", "Record this draw"));
-    var today = manilaToday();
-    var number = dayNumber(today);
-    if (!number) {
-        panel.appendChild(el("p", "", "Today, " + formatDate(today) + ", is outside the 52-day window. You can still read the card. Recording opens on " + formatDate(EDITION_2026.window_start) + "."));
+    var cycle = activeCycle();
+    var today = localToday();
+    if (!cycle) {
+        panel.appendChild(el("p", "", "Start a practice when you want these draws kept."));
+        var begin = el("a", "", "Begin your IX:52");
+        begin.href = "#practice";
+        panel.appendChild(begin);
         return panel;
     }
-    panel.appendChild(el("p", "", "Practice day " + number + " · " + formatDate(today) + ", Asia/Manila."));
-    var clashes = otherDays(card.code, today);
-    if (clashes.length) {
-        panel.appendChild(el("p", "warning", "This card is already recorded for " + clashes.map(formatDate).join(", ") + ". You can still correct today’s record. Nothing here is marked as missed or failed."));
+    var number = dayNumber(today);
+    if (today < cycle.start) {
+        panel.appendChild(el("p", "", "Your practice begins " + formatDate(cycle.start) + "."));
+        return panel;
     }
-    var button = el("button", "solid", "Record for today");
+    if (!number) {
+        panel.appendChild(el("p", "", "This cycle has finished. You can start another from the practice page."));
+        return panel;
+    }
+    panel.appendChild(el("p", "", "Day " + number + " of 52 · " + formatDate(today)));
+    var button = el("button", "solid", cycle.draws[today] ? "Update today" : "Record for today");
     button.type = "button";
     button.addEventListener("click", function () {
-        store.draws[today] = {
-            card_code: card.code,
-            capacity: state.capacity,
-            closed: store.draws[today] ? Boolean(store.draws[today].closed) : false
-        };
-        saveStore();
-        toast("Recorded");
+        recordDraw(card, today);
+        var y = window.scrollY;
         renderOracle();
+        window.scrollTo(0, y);
     });
     panel.appendChild(button);
-    panel.appendChild(el("p", "fine", "The app does not claim you physically drew a card unless you record it."));
     return panel;
 }
 
 function statusFor(date) {
-    var draw = store.draws[date];
-    if (!draw || !draw.card_code) return "Not recorded";
-    if (draw.capacity === "recovery") return "In recovery";
-    if (draw.closed) return "Completed reflection";
-    var number = dayNumber(date);
-    if (number && number > 1 && !(store.draws[addDays(date, -1)] && store.draws[addDays(date, -1)].card_code)) return "Returned";
-    return "Recorded";
+    var cycle = activeCycle();
+    var today = localToday();
+    var draw = cycle && cycle.draws[date];
+    if (draw && draw.card_code) return "Recorded";
+    if (date === today) return "Current day";
+    if (date > today) return "Upcoming";
+    return "Not recorded";
 }
 
 function renderGallery() {
@@ -756,7 +771,7 @@ function renderGallery() {
         if (oracle.is_code_red_exclusive) caption.appendChild(el("div", "exclusive", "Code:RED exclusive"));
         tile.appendChild(caption);
         tile.addEventListener("click", function () {
-            setCard(card.code, { focus: true });
+            setCard(card.code, { reveal: true });
             location.hash = "oracle";
         });
         grid.appendChild(tile);
@@ -768,114 +783,139 @@ function renderGallery() {
 function renderBeyond() {
     var mount = document.getElementById("beyond");
     mount.replaceChildren();
-    mount.appendChild(el("h2", "", "Beyond the Fifty-Two"));
-    mount.appendChild(el("p", "", "These contributors are part of the deck and are not counted as the fifty-two practice days."));
-    var grid = el("div", "gallery");
+    mount.appendChild(el("h2", "", "Beyond the fifty-two"));
+    mount.appendChild(el("p", "", "Jokers and packaging sit outside the 52 practice days. Jade Suayan made both the box and the card back."));
     ARTISTS_2026.filter(function (artist) { return artist.role === "beyond"; }).forEach(function (artist) {
-        var assets = ASSETS_2026.filter(function (asset) { return asset.artist_id === artist.artist_id; });
-        assets.forEach(function (asset) {
+        var block = el("section", "artist-spot");
+        var heading = el("h3", "", artist.artist_name);
+        block.appendChild(heading);
+        if (artist.social_url) block.appendChild(socialAnchor(artist.social_url));
+        var grid = el("div", "gallery beyond-grid");
+        ASSETS_2026.filter(function (asset) { return asset.artist_id === artist.artist_id; }).forEach(function (asset) {
             var tile = el("article", "tile");
+            var frame = el("div", "art-frame");
             if (canShowImage(asset)) {
                 var image = document.createElement("img");
                 image.className = "art-image";
                 image.src = asset.image_url;
                 image.alt = asset.image_alt;
                 image.loading = "lazy";
-                tile.appendChild(image);
-            } else {
-                var plate = el("div", "plate");
-                plate.appendChild(el("p", "meta", asset.image_asset_type.replace("-", " ")));
-                plate.appendChild(el("p", "withheld", "Artwork not reproduced."));
-                tile.appendChild(plate);
-            }
+                image.addEventListener("error", function () {
+                    frame.replaceChildren(el("p", "withheld", "Image unavailable"));
+                });
+                frame.appendChild(image);
+            } else frame.appendChild(el("p", "withheld", "Image unavailable"));
+            tile.appendChild(frame);
             var caption = el("div", "tile-caption");
-            caption.appendChild(el("strong", "", artist.artist_name));
-            caption.appendChild(el("div", "", artist.contribution));
-            if (artist.social_url) {
-                var link = el("a", "", "Instagram");
-                link.href = artist.social_url;
-                link.target = "_blank";
-                link.rel = "noopener noreferrer";
-                caption.appendChild(link);
-            }
+            caption.appendChild(el("strong", "", asset.image_asset_type === "box" ? "Box" : asset.image_asset_type === "card-back" ? "Card back" : "Joker"));
             tile.appendChild(caption);
             grid.appendChild(tile);
         });
+        block.appendChild(grid);
+        mount.appendChild(block);
     });
-    mount.appendChild(grid);
-    var producer = el("p", "");
-    producer.appendChild(document.createTextNode("Produced by "));
-    var link = el("a", "", "RunIt Decks");
-    link.href = EDITION_2026.deck_url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    producer.appendChild(link);
-    producer.appendChild(document.createTextNode(". Photography and styling of the commercial deck are credited by RunIt to Kandou."));
-    mount.appendChild(producer);
 }
 
 function renderPractice() {
     var mount = document.getElementById("practiceMount");
     mount.replaceChildren();
-    var today = manilaToday();
-    var number = dayNumber(today);
+    var today = localToday();
+    var cycle = activeCycle();
     var banner = el("div", "panel");
-    if (number) banner.appendChild(el("p", "", "Today is practice day " + number + ", " + formatDate(today) + "."));
-    else if (today < EDITION_2026.window_start) banner.appendChild(el("p", "", "The window opens " + formatDate(EDITION_2026.window_start) + ". You can explore the deck before then."));
-    else if (today === EDITION_2026.epilogue) banner.appendChild(el("p", "", "8 January 2027 is an optional epilogue. It is not a fifty-third card."));
-    else banner.appendChild(el("p", "", "The fifty-two days have passed. You can still return to any card."));
-    if (state.cardCode) {
-        var card = getCard(state.cardCode);
-        var jump = el("a", "", "Continue with " + card.label);
-        jump.href = "#oracle";
-        banner.appendChild(jump);
-        banner.appendChild(el("p", "", "Today’s verb, if you keep this card: " + card.oracle.daily_verb + "."));
+    if (!cycle) {
+        banner.appendChild(el("h2", "", "Begin your IX:52"));
+        banner.appendChild(el("p", "", "The deck is open now. Recording starts on the day you choose."));
+        var todayButton = el("button", "solid", "Start today");
+        todayButton.type = "button";
+        todayButton.addEventListener("click", function () {
+            startCycle(localToday());
+            renderPractice();
+        });
+        banner.appendChild(todayButton);
+        var dateField = document.createElement("input");
+        dateField.type = "date";
+        dateField.value = localToday();
+        dateField.setAttribute("aria-label", "Practice start date");
+        banner.appendChild(dateField);
+        var choose = el("button", "ghost", "Choose this date");
+        choose.type = "button";
+        choose.addEventListener("click", function () {
+            if (!dateField.value) return;
+            startCycle(dateField.value);
+            renderPractice();
+        });
+        banner.appendChild(choose);
+        mount.appendChild(banner);
     } else {
-        banner.appendChild(el("p", "", "Choose a card from the oracle when you have drawn one."));
-    }
-    banner.appendChild(capacityControl());
-    mount.appendChild(banner);
-
-    mount.appendChild(el("h2", "", "Fifty-two days"));
-    var calendar = el("div", "calendar");
-    for (var index = 0; index < 52; index += 1) {
-        var date = addDays(EDITION_2026.window_start, index);
-        var draw = store.draws[date];
-        var cell = el("div", "day");
-        cell.appendChild(el("strong", "", "Day " + (index + 1)));
-        cell.appendChild(el("span", "", formatDate(date)));
-        cell.appendChild(el("div", "", statusFor(date)));
-        if (draw && draw.card_code && getCard(draw.card_code)) {
-            var recorded = getCard(draw.card_code);
-            cell.appendChild(el("div", "", recorded.label));
-            cell.appendChild(el("div", "", recorded.artist.artist_name + " · " + recorded.oracle.daily_verb));
+        var number = dayNumber(today);
+        var recordedCount = Object.keys(cycle.draws).filter(function (date) {
+            return cycle.draws[date].card_code;
+        }).length;
+        var summary = el("p", "progress");
+        if (today < cycle.start) summary.textContent = "Begins " + formatDate(cycle.start) + ".";
+        else if (number) summary.textContent = "Day " + number + " of 52 · " + recordedCount + (recordedCount === 1 ? " draw recorded" : " draws recorded") + " · Next: Day " + Math.min(number + 1, 52);
+        else summary.textContent = "Day 52 was " + formatDate(addDays(cycle.start, 51)) + ". " + recordedCount + " draws recorded.";
+        banner.appendChild(summary);
+        if (state.cardCode) {
+            var openCard = getCard(state.cardCode);
+            var jump = el("a", "", "Continue with " + openCard.label);
+            jump.href = "#oracle";
+            banner.appendChild(jump);
         }
-        calendar.appendChild(cell);
-    }
-    mount.appendChild(calendar);
-    var epilogue = el("p", "fine", formatDate(EDITION_2026.epilogue) + " — optional integration. Not a standard card.");
-    mount.appendChild(epilogue);
+        banner.appendChild(capacityControl());
+        mount.appendChild(banner);
 
-    mount.appendChild(el("h2", "", "History"));
-    var list = el("ul", "history");
-    var dates = Object.keys(store.draws).filter(function (date) {
-        return store.draws[date].card_code;
-    }).sort();
-    if (!dates.length) list.appendChild(el("li", "", "Nothing is recorded yet."));
-    dates.forEach(function (date) {
-        var draw = store.draws[date];
-        var card = getCard(draw.card_code);
-        if (!card) return;
-        var item = el("li");
-        var noteMark = store.notes[card.code] ? " · note kept on this device" : "";
-        item.textContent = formatDate(date) + " · Day " + (dayNumber(date) || "—") + " · " + card.label + " · " + card.artist.artist_name + " · " + card.oracle.daily_verb + " · " + statusFor(date) + noteMark;
-        list.appendChild(item);
-    });
-    mount.appendChild(list);
+        mount.appendChild(el("h2", "", "Fifty-two days"));
+        var calendar = el("div", "calendar");
+        for (var index = 0; index < 52; index += 1) {
+            var date = addDays(cycle.start, index);
+            var cell = el("button", "day");
+            cell.type = "button";
+            cell.appendChild(el("strong", "", String(index + 1)));
+            cell.setAttribute("aria-label", "Day " + (index + 1) + ", " + formatDate(date) + ", " + statusFor(date));
+            if (cycle.draws[date] && cycle.draws[date].card_code) cell.classList.add("is-recorded");
+            if (date === today) cell.classList.add("is-today");
+            if (date > today) cell.classList.add("is-upcoming");
+            cell.addEventListener("click", function (chosen) {
+                return function () { showPracticeDay(chosen); };
+            }(date));
+            calendar.appendChild(cell);
+        }
+        mount.appendChild(calendar);
+        var detail = el("div", "panel");
+        detail.id = "practiceDetail";
+        mount.appendChild(detail);
+        if (state.practiceDate) showPracticeDay(state.practiceDate);
+        banner.appendChild(el("p", "fine", "Optional epilogue: " + formatDate(addDays(cycle.start, 52)) + "."));
+
+        var settings = el("div", "panel");
+        settings.appendChild(el("h2", "", "Practice dates"));
+        settings.appendChild(el("p", "", "Started " + formatDate(cycle.start) + ". A new start keeps this cycle and opens another."));
+        var nextDate = document.createElement("input");
+        nextDate.type = "date";
+        nextDate.value = cycle.start;
+        nextDate.setAttribute("aria-label", "New start date");
+        settings.appendChild(nextDate);
+        var change = el("button", "ghost", "Start another cycle");
+        change.type = "button";
+        change.addEventListener("click", function () {
+            if (!nextDate.value) return;
+            var hasDraws = Object.keys(cycle.draws).some(function (date) { return cycle.draws[date].card_code; });
+            if (hasDraws && !window.confirm("Keep this cycle and start a new one on " + formatDate(nextDate.value) + "? Saved draws stay in the previous cycle.")) return;
+            if (!hasDraws) {
+                cycle.start = nextDate.value;
+                saveStore();
+            } else startCycle(nextDate.value);
+            state.practiceDate = "";
+            renderPractice();
+        });
+        settings.appendChild(change);
+        mount.appendChild(settings);
+    }
 
     var privacy = el("div", "panel");
-    privacy.appendChild(el("h2", "", "Privacy"));
-    privacy.appendChild(el("p", "", "Draws and notes are stored in this browser only. They are not included in Share the Day. Export makes a file you keep. Delete removes them from this device."));
+    privacy.appendChild(el("h2", "", "On this device"));
+    privacy.appendChild(el("p", "", "Draws and notes stay in this browser. Export keeps a file. Delete removes the saved cycles from this device."));
     var row = el("div", "actions");
     var exportButton = el("button", "ghost", "Export");
     exportButton.type = "button";
@@ -883,10 +923,12 @@ function renderPractice() {
     var deleteButton = el("button", "ghost", "Delete saved practice");
     deleteButton.type = "button";
     deleteButton.addEventListener("click", function () {
-        if (!window.confirm("Delete saved draws and notes from this browser?")) return;
+        if (!window.confirm("Delete saved cycles and notes from this browser?")) return;
         localStorage.removeItem(STORE_KEY);
-        store = { draws: {}, notes: {} };
+        store = { version: 2, notes: {}, cycles: {}, theme: store.theme, capacity: store.capacity };
         state.sessionNote = "";
+        state.practiceDate = "";
+        saveStore();
         toast("Deleted");
         renderPractice();
     });
@@ -894,6 +936,33 @@ function renderPractice() {
     row.appendChild(deleteButton);
     privacy.appendChild(row);
     mount.appendChild(privacy);
+}
+
+function showPracticeDay(date) {
+    state.practiceDate = date;
+    var detail = document.getElementById("practiceDetail");
+    if (!detail) return;
+    var cycle = activeCycle();
+    detail.replaceChildren();
+    var number = practiceDayNumber(cycle.start, date);
+    detail.appendChild(el("h3", "", "Day " + number + " · " + formatDate(date)));
+    detail.appendChild(el("p", "", statusFor(date)));
+    var draw = cycle.draws[date];
+    if (draw && draw.card_code && getCard(draw.card_code)) {
+        var recorded = getCard(draw.card_code);
+        detail.appendChild(el("p", "", recorded.label + " · " + recorded.artist.artist_name + " · " + recorded.oracle.daily_verb));
+    }
+    if (date <= localToday() && state.cardCode) {
+        var card = getCard(state.cardCode);
+        var button = el("button", "solid", "Record " + card.label + " for this day");
+        button.type = "button";
+        button.addEventListener("click", function () {
+            recordDraw(card, date);
+            renderPractice();
+            showPracticeDay(date);
+        });
+        detail.appendChild(button);
+    }
 }
 
 function exportData() {
@@ -919,7 +988,7 @@ function applyTheme(theme) {
 }
 
 function init() {
-    applyManualLinks();
+    applyDeck();
     state.capacity = store.capacity || "ordinary";
     state.saveLocal = Boolean(store.saveLocal);
     applyTheme(store.theme || "light");
@@ -930,7 +999,7 @@ function init() {
     showView(currentView());
     document.getElementById("randomBtn").addEventListener("click", function () {
         var index = Math.floor(Math.random() * ORACLE_2026.length);
-        setCard(ORACLE_2026[index].card_code, { focus: true });
+        setCard(ORACLE_2026[index].card_code, { reveal: true });
     });
     document.getElementById("clearBtn").addEventListener("click", clearCard);
     document.getElementById("navToggle").addEventListener("click", function () {
@@ -953,7 +1022,25 @@ function init() {
         var dialog = document.getElementById("viewer");
         if (typeof dialog.close === "function" && dialog.open) dialog.close();
         else dialog.hidden = true;
+        if (state.viewerReturn && state.viewerReturn.focus) state.viewerReturn.focus();
     });
+    var filterToggle = document.getElementById("filterToggle");
+    if (filterToggle) {
+        filterToggle.addEventListener("click", function () {
+            var more = document.getElementById("filterMore");
+            var open = !more.classList.contains("is-open");
+            more.classList.toggle("is-open", open);
+            filterToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+    }
+    var navClose = document.getElementById("navClose");
+    if (navClose) {
+        navClose.addEventListener("click", function () {
+            document.getElementById("siteNav").classList.remove("is-open");
+            document.getElementById("navToggle").setAttribute("aria-expanded", "false");
+            document.getElementById("navToggle").focus();
+        });
+    }
     window.addEventListener("hashchange", function () { showView(currentView()); });
 }
 

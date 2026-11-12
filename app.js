@@ -431,7 +431,7 @@ function shareCaption(card) {
     var number = dayNumber(today);
     var lines = [];
     lines.push(number ? "IX:52 — Day " + number : "IX:52");
-    lines.push(card.label + " · " + card.oracle.daily_verb.toUpperCase());
+    lines.push(card.label + " · " + card.oracle.word_of_the_day.toUpperCase());
     lines.push("");
     lines.push("Artwork by " + card.artist.artist_name);
     var handle = handleFrom(card.artist.social_url || "");
@@ -439,7 +439,9 @@ function shareCaption(card) {
     lines.push("");
     lines.push("Today's reflection: " + (state.shareReflection && state.shareReflection.trim() ? state.shareReflection.trim() : "[personal text]"));
     lines.push("");
-    lines.push("Bicycle Sari-Sari Code:RED by RunIt Decks");
+    lines.push("\"" + card.oracle.incantation + "\"");
+    lines.push("");
+    lines.push("Bicycle Sari-Sari Code:RED by " + EDITION_2026.instagram_handle);
     lines.push("");
     lines.push("#IX52 #Verbesque #CodeRED");
     return lines.join("\n");

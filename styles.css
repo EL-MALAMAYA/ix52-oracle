@@ -412,21 +412,21 @@ h3 { font-size: 1.45rem; margin: 0 0 0.4rem; }
 }
 
 .steps {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0.4rem;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.35rem;
     margin: 0.8rem 0 1rem;
-    overflow-x: auto;
     max-width: 100%;
 }
 
-.step { flex: none; min-height: 44px; }
+.step { min-height: 44px; min-width: 0; padding: 0.35rem 0.15rem; font-size: clamp(0.68rem, 1.5vw, 0.85rem); }
 
 .step {
     border: 1px solid var(--border);
     background: transparent;
     border-radius: 999px;
-    padding: 0.35rem 0.7rem;
+    padding: 0.35rem 0.1rem;
+    white-space: nowrap;
 }
 
 .step[aria-selected="true"] {
@@ -628,8 +628,8 @@ dialog::backdrop { background: rgba(25, 25, 25, 0.45); }
     body { font-size: 16px; }
     #suitGroup { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
     #suitGroup .choice { min-height: 44px; padding: 0.2rem; font-size: 0.78rem; }
-    #rankGroup { flex-wrap: nowrap; overflow-x: auto; width: 100%; max-width: 100%; }
-    #rankGroup .choice { flex: none; min-width: 44px; min-height: 44px; }
+    #rankGroup { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: visible; }
+    #rankGroup .choice { min-width: 0; width: auto; min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

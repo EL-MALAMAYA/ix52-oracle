@@ -16,6 +16,10 @@ var state = {
 };
 
 var store = loadStore();
+var rankOrigin = 0;
+var rankSliding = false;
+var rankSlideToken = 0;
+var rankSuppressClick = false;
 
 function loadStore() {
     try {
@@ -307,9 +311,8 @@ function syncChoiceButtons() {
     document.querySelectorAll("[data-suit]").forEach(function (button) {
         button.setAttribute("aria-checked", button.getAttribute("data-suit") === state.suit ? "true" : "false");
     });
-    document.querySelectorAll("[data-rank]").forEach(function (button) {
-        button.setAttribute("aria-checked", button.getAttribute("data-rank") === state.rank ? "true" : "false");
-    });
+    if (state.rank) centerRank(state.rank);
+    else paintRanks();
 }
 
 function trySelection() {
@@ -320,14 +323,157 @@ function trySelection() {
     setCard(codeFor(state.suit, state.rank), { reveal: true });
 }
 
+function rankShort(rank) {
+    if (rank === "Ace") return "A";
+    if (rank === "Jack") return "J";
+    if (rank === "Queen") return "Q";
+    if (rank === "King") return "K";
+    return rank;
+}
+
+function rankMetrics() {
+    var viewport = document.getElementById("rankViewport");
+    var width = viewport ? viewport.clientWidth : 0;
+    var gap = 6;
+    if (!width) return { count: 5, slot: 44, gap: gap };
+    var count = Math.floor((width + gap) / 50);
+    if (count < 3) count = 3;
+    if (count > 7) count = 7;
+    return { count: count, slot: (width - gap * (count - 1)) / count, gap: gap };
+}
+
+function fillRankTrack(start, count, slot) {
+    var track = document.getElementById("rankGroup");
+    track.replaceChildren();
+    for (var i = 0; i < count; i++) {
+        var rank = RANK_ORDER_2026[(start + i) % RANK_ORDER_2026.length];
+        var button = el("button", "choice", rankShort(rank));
+        button.type = "button";
+        button.setAttribute("role", "radio");
+        button.setAttribute("data-rank", rank);
+        button.setAttribute("aria-checked", rank === state.rank ? "true" : "false");
+        button.setAttribute("aria-label", RANK_LABELS_2026[rank]);
+        button.style.flex = "0 0 " + slot + "px";
+        button.addEventListener("click", function () {
+            if (rankSuppressClick || rankSliding) {
+                rankSuppressClick = false;
+                return;
+            }
+            state.rank = this.getAttribute("data-rank");
+            syncChoiceButtons();
+            trySelection(false);
+        });
+        track.appendChild(button);
+    }
+}
+
+function paintRanks() {
+    var metrics = rankMetrics();
+    var track = document.getElementById("rankGroup");
+    fillRankTrack(rankOrigin, metrics.count, metrics.slot);
+    track.style.transition = "none";
+    track.style.transform = "translateX(0)";
+}
+
+function centerRank(rank) {
+    var index = RANK_ORDER_2026.indexOf(rank);
+    if (index < 0) return;
+    var count = rankMetrics().count;
+    rankOrigin = (index - Math.floor((count - 1) / 2) + RANK_ORDER_2026.length) % RANK_ORDER_2026.length;
+    paintRanks();
+}
+
+function shiftRanks(direction) {
+    if (rankSliding) return;
+    var metrics = rankMetrics();
+    var distance = metrics.slot + metrics.gap;
+    var from = direction > 0 ? rankOrigin : (rankOrigin - 1 + RANK_ORDER_2026.length) % RANK_ORDER_2026.length;
+    var track = document.getElementById("rankGroup");
+    var token = ++rankSlideToken;
+    rankSliding = true;
+    fillRankTrack(from, metrics.count + 1, metrics.slot);
+    track.style.transition = "none";
+    track.style.transform = "translateX(" + (direction > 0 ? 0 : -distance) + "px)";
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            if (token !== rankSlideToken) return;
+            track.style.transition = "transform 0.28s ease";
+            track.style.transform = "translateX(" + (direction > 0 ? -distance : 0) + "px)";
+        });
+    });
+    var finish = function () {
+        if (token !== rankSlideToken || !rankSliding) return;
+        rankSliding = false;
+        rankOrigin = (rankOrigin + direction + RANK_ORDER_2026.length) % RANK_ORDER_2026.length;
+        paintRanks();
+    };
+    track.addEventListener("transitionend", function onEnd(event) {
+        if (event.propertyName !== "transform") return;
+        track.removeEventListener("transitionend", onEnd);
+        finish();
+    });
+    window.setTimeout(finish, 340);
+}
+
+function bindRankCarousel() {
+    var track = document.getElementById("rankGroup");
+    var viewport = document.getElementById("rankViewport");
+    var pointer = null;
+    document.getElementById("rankPrev").addEventListener("click", function () { shiftRanks(-1); });
+    document.getElementById("rankNext").addEventListener("click", function () { shiftRanks(1); });
+    track.addEventListener("keydown", function (event) {
+        if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].indexOf(event.key) === -1) return;
+        var rank = document.activeElement && document.activeElement.getAttribute("data-rank");
+        if (!rank || RANK_ORDER_2026.indexOf(rank) === -1) return;
+        event.preventDefault();
+        var direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
+        var next = RANK_ORDER_2026[(RANK_ORDER_2026.indexOf(rank) + direction + RANK_ORDER_2026.length) % RANK_ORDER_2026.length];
+        state.rank = next;
+        syncChoiceButtons();
+        trySelection(false);
+        var button = track.querySelector('[data-rank="' + next + '"]');
+        if (button) button.focus();
+    });
+    viewport.addEventListener("pointerdown", function (event) {
+        if (rankSliding) return;
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0 };
+    });
+    viewport.addEventListener("pointermove", function (event) {
+        if (!pointer || pointer.id !== event.pointerId) return;
+        pointer.dx = event.clientX - pointer.x;
+    });
+    function endPointer(event) {
+        if (!pointer || pointer.id !== event.pointerId) return;
+        var dx = pointer.dx;
+        var dy = event.clientY - pointer.y;
+        pointer = null;
+        if (Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy)) return;
+        rankSuppressClick = true;
+        window.setTimeout(function () { rankSuppressClick = false; }, 400);
+        shiftRanks(dx < 0 ? 1 : -1);
+    }
+    viewport.addEventListener("pointerup", endPointer);
+    viewport.addEventListener("pointercancel", function (event) {
+        if (!pointer || pointer.id !== event.pointerId) return;
+        pointer = null;
+    });
+    window.addEventListener("resize", function () {
+        if (rankSliding) return;
+        if (state.rank) centerRank(state.rank);
+        else paintRanks();
+    });
+}
+
 function buildChoices() {
     var suits = document.getElementById("suitGroup");
-    var ranks = document.getElementById("rankGroup");
     Object.keys(SUITS_2026).forEach(function (suit) {
-        var button = el("button", "choice", suit + " " + SUITS_2026[suit].symbol);
+        var button = el("button", "choice", SUITS_2026[suit].symbol + "\uFE0E");
         button.type = "button";
         button.setAttribute("role", "radio");
         button.setAttribute("data-suit", suit);
+        button.setAttribute("aria-label", suit);
+        button.title = suit;
         button.setAttribute("aria-checked", "false");
         button.addEventListener("click", function () {
             state.suit = suit;
@@ -336,22 +482,9 @@ function buildChoices() {
         });
         suits.appendChild(button);
     });
-    RANK_ORDER_2026.forEach(function (rank) {
-        var button = el("button", "choice", rank === "Ace" ? "A" : rank === "Jack" ? "J" : rank === "Queen" ? "Q" : rank === "King" ? "K" : rank);
-        button.type = "button";
-        button.setAttribute("role", "radio");
-        button.setAttribute("data-rank", rank);
-        button.setAttribute("aria-checked", "false");
-        button.setAttribute("aria-label", RANK_LABELS_2026[rank]);
-        button.addEventListener("click", function () {
-            state.rank = rank;
-            syncChoiceButtons();
-            trySelection(false);
-        });
-        ranks.appendChild(button);
-    });
+    paintRanks();
+    bindRankCarousel();
     arrowGroup(suits);
-    arrowGroup(ranks);
     var rankFilter = document.getElementById("galleryRank");
     var all = el("option", "", "All ranks");
     all.value = "";
@@ -429,17 +562,24 @@ function actionPair(card) {
 function shareCaption(card) {
     var today = localToday();
     var number = dayNumber(today);
+    var reflection = state.shareReflection && state.shareReflection.trim();
+    var handle = handleFrom(card.artist.social_url || "");
     var lines = [];
     lines.push(number ? "IX:52 — Day " + number : "IX:52");
     lines.push(card.label + " · " + card.oracle.word_of_the_day.toUpperCase());
     lines.push("");
+    if (!reflection) {
+        lines.push("\"" + card.oracle.incantation + "\"");
+        lines.push("");
+    }
     lines.push("Artwork by " + card.artist.artist_name);
-    var handle = handleFrom(card.artist.social_url || "");
     if (handle) lines.push(handle);
-    lines.push("");
-    lines.push("Today's reflection: " + (state.shareReflection && state.shareReflection.trim() ? state.shareReflection.trim() : "[personal text]"));
-    lines.push("");
-    lines.push("\"" + card.oracle.incantation + "\"");
+    if (reflection) {
+        lines.push("");
+        lines.push("Today's reflection: " + reflection);
+        lines.push("");
+        lines.push("\"" + card.oracle.incantation + "\"");
+    }
     lines.push("");
     lines.push("Bicycle Sari-Sari Code:RED by " + EDITION_2026.instagram_handle);
     lines.push("");

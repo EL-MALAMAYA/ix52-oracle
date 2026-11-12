@@ -51,7 +51,13 @@
                         </div>
                         <div>
                             <div class="selector-label" id="rankLabel">Rank</div>
-                            <div class="choice-row" id="rankGroup" role="radiogroup" aria-labelledby="rankLabel"></div>
+                            <div class="rank-carousel">
+                                <button class="rank-nav" id="rankPrev" type="button" aria-label="Earlier ranks">‹</button>
+                                <div class="rank-viewport" id="rankViewport">
+                                    <div class="rank-track" id="rankGroup" role="radiogroup" aria-labelledby="rankLabel"></div>
+                                </div>
+                                <button class="rank-nav" id="rankNext" type="button" aria-label="Later ranks">›</button>
+                            </div>
                         </div>
                     </div>
                     <div class="selector-actions">

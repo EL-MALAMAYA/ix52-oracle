@@ -43,7 +43,7 @@ var SUITS_2026 = {
         domain: "Making",
         direction: "South",
         symbol: "♣",
-        color_name: "Violet",
+        color_name: "Cosmic Purple",
         color_hex: "#8246C8",
         color_source: COLOR_SOURCE_2026
     },

@@ -1,7 +1,7 @@
 "use strict";
 
 var STORE_KEY = "ix52-2026-v1";
-var VIEWS = ["oracle", "artists", "practice", "about"];
+var VIEWS = ["oracle", "artists", "practice", "body", "bible", "about"];
 
 var state = {
     suit: "",
@@ -239,8 +239,12 @@ function fallbackCopy(text) {
 }
 
 function currentView() {
-    var name = (location.hash || "#oracle").replace("#", "");
-    return VIEWS.indexOf(name) === -1 ? "oracle" : name;
+    var hash = (location.hash || "").replace("#", "").split("?")[0];
+    if (VIEWS.indexOf(hash) !== -1) return hash;
+    var path = location.pathname.replace(/\/index\.html$/, "").replace(/\/$/, "");
+    if (path.endsWith("/bible")) return "bible";
+    if (path.endsWith("/body")) return "body";
+    return "oracle";
 }
 
 function showView(name) {
@@ -259,6 +263,8 @@ function showView(name) {
     if (name === "oracle" && state.cardCode) renderOracle();
     if (name === "artists") renderGallery();
     if (name === "practice") renderPractice();
+    if (name === "body") renderBody();
+    if (name === "bible" && typeof openBible === "function") openBible();
 }
 
 function setCard(code, options) {
@@ -566,24 +572,20 @@ function shareCaption(card) {
     var handle = handleFrom(card.artist.social_url || "");
     var lines = [];
     lines.push(number ? "IX:52 — Day " + number : "IX:52");
-    lines.push(card.label + " · " + card.oracle.word_of_the_day.toUpperCase());
+    lines.push(card.label + " · " + card.oracle.daily_verb.toUpperCase());
     lines.push("");
-    if (!reflection) {
-        lines.push("\"" + card.oracle.incantation + "\"");
-        lines.push("");
-    }
     lines.push("Artwork by " + card.artist.artist_name);
     if (handle) lines.push(handle);
     if (reflection) {
         lines.push("");
         lines.push("Today's reflection: " + reflection);
-        lines.push("");
-        lines.push("\"" + card.oracle.incantation + "\"");
     }
     lines.push("");
     lines.push("Bicycle Sari-Sari Code:RED by " + EDITION_2026.instagram_handle);
     lines.push("");
     lines.push("#IX52 #Verbesque #CodeRED");
+    lines.push("");
+    lines.push("https://ix52.maiba.studio/");
     return lines.join("\n");
 }
 
@@ -672,6 +674,9 @@ function renderOracle() {
     color.appendChild(el("span", "", card.suitMeta.color_name));
     right.appendChild(color);
     right.appendChild(el("p", "fine", "Edition theme. Not sampled from the artwork."));
+    var bodyLink = el("a", "text-btn", "Today’s Body & Mind Practice");
+    bodyLink.href = "#body";
+    right.appendChild(bodyLink);
 
     var share = el("div", "panel");
     share.appendChild(el("h3", "", "Share the Day"));
@@ -794,6 +799,149 @@ function copyButton(label, text) {
     return button;
 }
 
+var bodyClock = { timer: 0, left: 0, running: false, key: "" };
+
+function bodyFor(code) {
+    return (typeof BODY_2026 === "undefined" ? [] : BODY_2026).filter(function (item) {
+        return item.card_code === code;
+    })[0];
+}
+
+function bodyCompletion(code) {
+    var today = localToday();
+    var cycle = activeCycle();
+    if (cycle && cycle.draws[today] && cycle.draws[today].card_code === code) {
+        if (!cycle.draws[today].body) cycle.draws[today].body = { physical: false, mental: false };
+        return cycle.draws[today].body;
+    }
+    store.body = store.body || {};
+    var key = today + ":" + code;
+    if (!store.body[key]) store.body[key] = { physical: false, mental: false };
+    return store.body[key];
+}
+
+function stopBodyClock() {
+    if (bodyClock.timer) window.clearInterval(bodyClock.timer);
+    bodyClock.timer = 0;
+    bodyClock.running = false;
+}
+
+function paintBodyClock() {
+    var node = document.getElementById("bodyClock");
+    if (!node) return;
+    var minutes = Math.floor(bodyClock.left / 60);
+    var seconds = bodyClock.left % 60;
+    node.textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+}
+
+function renderBody() {
+    var mount = document.getElementById("bodyMount");
+    if (!mount) return;
+    mount.replaceChildren();
+    if (!state.cardCode) {
+        mount.appendChild(el("p", "", "Select the card you drew. This page uses that card."));
+        var choose = el("a", "", "Choose a card");
+        choose.href = "#oracle";
+        mount.appendChild(choose);
+        return;
+    }
+    var card = getCard(state.cardCode);
+    var routine = bodyFor(card.code);
+    if (!routine) {
+        mount.appendChild(el("p", "", "This card has no Body & Mind routine."));
+        return;
+    }
+    var variant = routine.capacity_variants[state.capacity] || routine.capacity_variants.ordinary;
+    var clockKey = card.code + ":" + state.capacity;
+    if (bodyClock.key !== clockKey) {
+        stopBodyClock();
+        bodyClock.key = clockKey;
+        bodyClock.left = variant.total_minutes * 60;
+    }
+    mount.appendChild(el("p", "fine", "Choose movements that suit your body and adjust or stop if needed."));
+    var head = el("div", "body-head");
+    head.appendChild(el("h2", "", card.label));
+    head.appendChild(el("p", "", "Artwork by " + card.artist.artist_name));
+    head.appendChild(el("p", "verb", card.oracle.daily_verb));
+    head.appendChild(el("p", "", "About " + variant.total_minutes + " minutes · " + variant.physical_minutes + " movement, " + variant.mental_minutes + " attention" + (variant.rest_minutes ? ", " + variant.rest_minutes + " transition" : "")));
+    mount.appendChild(head);
+    mount.appendChild(capacityControl());
+    if (state.capacity === "recovery") {
+        mount.appendChild(el("p", "", "This is optional. You can skip it and the day still counts."));
+    }
+    var grid = el("div", "body-grid");
+    grid.appendChild(practiceBlock("Physical practice", routine.physical_title, routine.physical_description, variant.physical_steps, variant.physical_minutes, routine.accessibility_alternative, "physical"));
+    grid.appendChild(practiceBlock("Mental practice", routine.mental_title, routine.mental_description, variant.mental_steps, variant.mental_minutes, "", "mental"));
+    mount.appendChild(grid);
+    mount.appendChild(el("p", "", routine.philosophical_connection));
+    mount.appendChild(el("p", "fine", "Equipment: " + routine.equipment));
+    var timer = el("div", "panel body-timer");
+    timer.appendChild(el("h3", "", "Optional timer"));
+    var clock = el("p", "body-clock", "");
+    clock.id = "bodyClock";
+    timer.appendChild(clock);
+    paintBodyClock();
+    var actions = el("div", "actions");
+    actions.appendChild(bodyClockButton("Start", function () {
+        if (bodyClock.running) return;
+        if (bodyClock.left <= 0) bodyClock.left = variant.total_minutes * 60;
+        bodyClock.running = true;
+        bodyClock.timer = window.setInterval(function () {
+            if (bodyClock.left > 0) bodyClock.left -= 1;
+            paintBodyClock();
+            if (bodyClock.left <= 0) {
+                stopBodyClock();
+                var note = document.getElementById("bodyClockNote");
+                if (note) note.textContent = "The time you set is over.";
+            }
+        }, 1000);
+    }));
+    actions.appendChild(bodyClockButton("Pause", function () { stopBodyClock(); }));
+    actions.appendChild(bodyClockButton("Stop", function () {
+        stopBodyClock();
+        bodyClock.left = variant.total_minutes * 60;
+        paintBodyClock();
+        var note = document.getElementById("bodyClockNote");
+        if (note) note.textContent = "";
+    }));
+    timer.appendChild(actions);
+    var note = el("p", "fine", "");
+    note.id = "bodyClockNote";
+    timer.appendChild(note);
+    mount.appendChild(timer);
+}
+
+function practiceBlock(kicker, title, description, steps, minutes, alternative, kind) {
+    var panel = el("section", "panel");
+    panel.appendChild(el("p", "meta", kicker + " · " + minutes + " min"));
+    panel.appendChild(el("h3", "", title));
+    panel.appendChild(el("p", "", description));
+    var list = document.createElement("ol");
+    steps.forEach(function (step) { list.appendChild(el("li", "", step)); });
+    panel.appendChild(list);
+    if (alternative) panel.appendChild(el("p", "", alternative));
+    var done = bodyCompletion(state.cardCode);
+    var label = el("label", "check-line");
+    var box = document.createElement("input");
+    box.type = "checkbox";
+    box.checked = Boolean(done[kind]);
+    box.addEventListener("change", function () {
+        done[kind] = box.checked;
+        saveStore();
+    });
+    label.appendChild(box);
+    label.appendChild(document.createTextNode(kind === "physical" ? " Mark movement done" : " Mark attention done"));
+    panel.appendChild(label);
+    return panel;
+}
+
+function bodyClockButton(label, onClick) {
+    var button = el("button", "ghost", label);
+    button.type = "button";
+    button.addEventListener("click", onClick);
+    return button;
+}
+
 function capacityControl() {
     var group = el("div", "choice-row");
     group.setAttribute("role", "radiogroup");
@@ -808,7 +956,8 @@ function capacityControl() {
             state.capacity = mode.id;
             store.capacity = mode.id;
             saveStore();
-            renderOracle();
+            if (currentView() === "body") renderBody();
+            else renderOracle();
             window.scrollTo(0, y);
             if (currentView() === "practice") renderPractice();
         });
@@ -839,7 +988,8 @@ function recordDraw(card, date) {
     cycle.draws[date] = {
         card_code: card.code,
         capacity: state.capacity,
-        closed: existing ? Boolean(existing.closed) : false
+        closed: existing ? Boolean(existing.closed) : false,
+        body: existing && existing.body ? existing.body : { physical: false, mental: false }
     };
     saveStore();
     toast("Recorded");

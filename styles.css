@@ -349,7 +349,7 @@ h3 { font-size: 1.45rem; margin: 0 0 0.4rem; }
     font-size: 0.92rem;
 }
 
-.choice[aria-checked="true"], .choice.is-on {
+.choice[aria-checked="true"], .choice[aria-pressed="true"], .choice.is-on {
     background: var(--ink);
     color: var(--background);
     border-color: var(--ink);
@@ -654,6 +654,63 @@ dialog::backdrop { background: rgba(25, 25, 25, 0.45); }
 
 @media (max-width: 860px) {
     .gallery { grid-template-columns: 1fr 1fr; }
+}
+
+.body-grid { display: grid; grid-template-columns: 1fr; gap: 0.8rem; }
+.body-head h2 { margin-bottom: 0.2rem; }
+.body-clock { font-variant-numeric: tabular-nums; font-size: 1.6rem; margin: 0.2rem 0 0.6rem; }
+.body-timer .actions, .bible-nav, .bible-tools, .bible-zoom { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
+.bible-wrap { width: min(1120px, calc(100% - 1rem)); }
+.bible-bar, .bible-nav { display: flex; justify-content: space-between; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap; }
+.bible-name { margin: 0; font-family: var(--serif); font-size: 1.35rem; }
+.bible-stage { margin: 0.8rem 0; min-height: 40vh; outline: none; }
+.bible-spread { display: flex; justify-content: center; gap: 0.8rem; transition: transform 180ms ease, opacity 180ms ease; }
+.bible-stage.is-turning-next .bible-spread { transform: translateX(-18px); opacity: 0.55; }
+.bible-stage.is-turning-prev .bible-spread { transform: translateX(18px); opacity: 0.55; }
+.bible-sheet { width: min(100%, 760px); margin: 0 auto 1rem; }
+.bible-spread.is-pair .bible-sheet { width: min(50%, 520px); margin: 0; }
+.bible-frame { position: relative; background: #fff; box-shadow: var(--shadow); }
+.bible-frame canvas { display: block; width: 100%; height: auto; }
+.bible-stage { background: color-mix(in srgb, var(--ink) 4%, var(--background)); padding: 0.8rem 0; }
+.textLayer { position: absolute; inset: 0; overflow: hidden; line-height: 1; opacity: 1; }
+.textLayer span { color: transparent; position: absolute; white-space: pre; transform-origin: 0 0; }
+.textLayer ::selection { background: rgba(227, 38, 37, 0.28); }
+.bible-links { position: absolute; inset: 0; }
+.bible-links a { position: absolute; }
+.bible-indicator { margin: 0; min-width: 8rem; text-align: center; }
+.bible-nav input { width: 4.5rem; border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 0.35rem 0.6rem; }
+.bible-progress { height: 3px; background: var(--border); margin-top: 0.6rem; }
+.bible-progress::before { content: ""; display: block; height: 100%; width: var(--progress, 0%); background: var(--code-red); }
+.bible-toc-list { display: flex; flex-direction: column; align-items: flex-start; max-height: 50vh; overflow: auto; }
+.bible-toc-item { text-align: left; }
+.bible-scroll { width: 100%; }
+button:disabled { opacity: 0.45; }
+
+@media (min-width: 860px) {
+    .body-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 1040px) {
+    .header-tools { margin-left: auto; }
+    .nav-toggle { display: inline-flex; }
+    .nav {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        margin-left: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.15rem;
+        padding: 0.75rem 1rem 1rem;
+        background: var(--background);
+        border-bottom: 1px solid var(--border);
+        z-index: 20;
+    }
+    .nav.is-open { display: flex; }
+    .nav-close { display: inline-flex; min-height: 44px; }
+    .nav a { padding: 0.55rem 0; min-height: 44px; }
 }
 
 @media (max-width: 720px) {

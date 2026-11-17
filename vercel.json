@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/bible", "destination": "/index.html" },
+    { "source": "/body", "destination": "/index.html" }
+  ]
+}

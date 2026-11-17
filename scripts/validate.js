@@ -254,6 +254,52 @@ var archived = fs.readFileSync(path.join(root, "data/editions/2025/oracle.js"));
 var original = fs.readFileSync(path.join(root, "data.js"));
 if (!archived.equals(original)) fail("2025 archive does not match data.js");
 
+var bodyFile = load("data/editions/2026/body.js", ["BODY_2026"]);
+var routines = bodyFile.BODY_2026;
+var routineCodes = {};
+if (routines.length !== 52) fail("Body & Mind should have 52 routines");
+routines.forEach(function (routine) {
+    if (routineCodes[routine.card_code]) fail("Duplicate routine " + routine.card_code);
+    routineCodes[routine.card_code] = true;
+    if (!routine.physical_steps.length || !routine.mental_steps.length) fail(routine.card_code + " is missing steps");
+    ["expansive", "ordinary", "constrained", "recovery"].forEach(function (mode) {
+        var variant = routine.capacity_variants[mode];
+        if (!variant) fail(routine.card_code + " missing " + mode);
+        else if (variant.total_minutes > 30) fail(routine.card_code + " " + mode + " exceeds 30 minutes");
+        else if (!variant.physical_steps.length || !variant.mental_steps.length) fail(routine.card_code + " " + mode + " has empty steps");
+    });
+    if (routine.capacity_variants.constrained.total_minutes > routine.capacity_variants.ordinary.total_minutes) {
+        fail(routine.card_code + " constrained is not shorter");
+    }
+    if (routine.capacity_variants.recovery.total_minutes > 10) fail(routine.card_code + " recovery exceeds 10 minutes");
+});
+oracle.forEach(function (card) {
+    if (!routineCodes[card.card_code]) fail("Missing routine for " + card.card_code);
+});
+var titles = routines.map(function (routine) { return routine.physical_title + "|" + routine.mental_title; });
+if (new Set(titles).size !== titles.length) fail("Body & Mind titles are not distinct");
+var archiveBlob = JSON.stringify(archive.ORACLE_CARDS);
+routines.forEach(function (routine) {
+    routine.physical_steps.concat(routine.mental_steps).forEach(function (step) {
+        if (step.length > 40 && archiveBlob.indexOf(step) !== -1) fail("2025 text copied into " + routine.card_code);
+    });
+});
+var caption = fs.readFileSync(path.join(root, "app.js"), "utf8");
+var hashAt = caption.indexOf('lines.push("#IX52 #Verbesque #CodeRED")');
+var urlAt = caption.indexOf('lines.push("https://ix52.maiba.studio/")');
+if (hashAt === -1 || urlAt === -1 || urlAt < hashAt) fail("Caption URL is not after the hashtags");
+if (caption.split("https://ix52.maiba.studio/").length !== 2) fail("Caption URL should be appended once");
+var pdfPath = path.join(root, "books", "the-verbesque-bible-2026.pdf");
+if (!fs.existsSync(pdfPath)) fail("Verbesque Bible PDF is missing");
+else {
+    var header = fs.readFileSync(pdfPath).subarray(0, 5).toString();
+    if (header !== "%PDF-") fail("Bible file is not a PDF");
+}
+if (!fs.existsSync(path.join(root, "vendor", "pdf.min.js"))) fail("PDF.js is missing");
+if (!fs.existsSync(path.join(root, "index.html")) || fs.readFileSync(path.join(root, "index.html"), "utf8").indexOf('href="#bible"') === -1) {
+    fail("Bible navigation is missing");
+}
+
 console.log("IX:52 2026 validation");
 console.log("Cards: " + oracle.length);
 console.log("Standard artists: " + artists.filter(function (artist) { return artist.card_code; }).length);

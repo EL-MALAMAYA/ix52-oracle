@@ -29,6 +29,8 @@
                 <a href="#oracle">Oracle</a>
                 <a href="#artists">Gallery</a>
                 <a href="#practice">Practice</a>
+                <a href="#body">Body & Mind</a>
+                <a href="#bible">The Bible</a>
                 <a href="#about">About</a>
             </nav>
             <div class="header-tools">
@@ -111,6 +113,19 @@
             </div>
         </section>
 
+        <section class="view" id="view-body" hidden>
+            <div class="wrap">
+                <p class="kicker">Movement, attention, and recovery</p>
+                <h1>Body & Mind</h1>
+                <p class="lede">A daily practice of movement, attention, and recovery.</p>
+                <div id="bodyMount"></div>
+            </div>
+        </section>
+
+        <section class="view" id="view-bible" hidden>
+            <div class="wrap bible-wrap" id="bibleRoot"></div>
+        </section>
+
         <section class="view" id="view-about" hidden>
             <div class="wrap prose">
                 <p class="kicker">Maiba Studio · 2026 edition</p>
@@ -190,6 +205,9 @@
     <script src="data/editions/2026/assets.js"></script>
     <script src="data/editions/2026/oracle.js"></script>
     <script src="data/editions/2026/deck.js"></script>
+    <script src="data/editions/2026/body.js"></script>
+    <script src="vendor/pdf.min.js"></script>
+    <script src="bible.js"></script>
     <script src="app.js"></script>
     <script>
         document.getElementById("footerYear").textContent = String(new Date().getFullYear());
